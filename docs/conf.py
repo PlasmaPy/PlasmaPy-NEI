@@ -10,8 +10,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'PlasmaPy-NEI'
-copyright = '2020, PlasmaPy Developers'
-author = 'PlasmaPy Developers'
+copyright = '2020, PlasmaPy-NEI Developers'
+author = 'PlasmaPy-NEI Developers'
 
 # The full version, including alpha/beta/rc tags
 from plasmapy_nei import __version__
