@@ -44,15 +44,6 @@ image-run: &image-tests
 
 version: 2
 jobs:
-  egg-info-36:
-    docker:
-      - image: circleci/python:3.6
-    steps:
-      - checkout
-      - run: *skip-check
-      - run: *merge-check
-      - run: python setup.py egg_info
-
   egg-info-37:
     docker:
       - image: circleci/python:3.7
@@ -121,7 +112,6 @@ workflows:
 
   egg-info:
     jobs:
-      - egg-info-36
       - egg-info-37
 
   twine-check:
