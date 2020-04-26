@@ -1,38 +1,34 @@
-PlasmaPy-NEI
-------------
+# PlasmaPy-NEI
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
 [![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy:openastronomy.org)
-
-[![Build Status](https://travis-ci.org/PlasmaPy/PlasmaPy.svg?branch=master)](https://travis-ci.org/PlasmaPy/PlasmaPy)
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
-
 
 PlasmaPy-NEI will be an affiliated package of PlasmaPy designed to perform
 non-equilibrium ionization modeling of plasma.  Use cases include plasma in
 the solar wind and during coronal mass ejections.  Please read more on the
-`PlasmaPy-NEI online documentation <https://nei.plasmapy.org>`_.
+[PlasmaPy-NEI online documentation](https://nei.plasmapy.org).
 
-License
--------
+## License
+
 
 This project is Copyright (c) PlasmaPy Developers and licensed under
 the terms of the BSD+Patent license. Additional licenses are found in the
 `licenses` folder.
 
-Acknowledgements
-----------------
+## Acknowledgements
 
 Development on PlasmaPy-NEI has been supported by NASA, NSF, and the
 Smithsonian Institution.
 
-Contributing
-------------
+## Contributing
 
 We love contributions! PlasmaPy-NEI is open source,
 built on open source, and we'd love to have you in our community.
 
-**Imposter syndrome disclaimer**: We want your help. No, really.
+### Imposter syndrome disclaimer 
+
+We want your help. No, really.
 
 There may be a little voice inside your head that is telling you that you're not
 ready to be an open source contributor; that your skills aren't nearly good
@@ -53,7 +49,7 @@ a whole, because you're coming to the project with fresh eyes, so you can see
 the errors and assumptions that seasoned contributors have glossed over.
 
 Note: This disclaimer was originally written by
-`Adrienne Lowe <https://github.com/adriennefriend>`_ for a
-`PyCon talk <https://www.youtube.com/watch?v=6Uj746j9Heo>`_, and was adapted by
+[Adrienne Lowe](https://github.com/adriennefriend) for a
+[PyCon talk](https://www.youtube.com/watch?v=6Uj746j9Heo), and was adapted by
 PlasmaPy-NEI based on its use in the README file for the
-`MetPy project <https://github.com/Unidata/MetPy>`_.
+[MetPy project](https://github.com/Unidata/MetPy).
