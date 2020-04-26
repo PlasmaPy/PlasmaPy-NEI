@@ -1,0 +1,75 @@
+{
+    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "@type": "SoftwareSourceCode",
+    "license": "https://spdx.org/licenses/BSD-3-Clause",
+    "codeRepository": "https://github.com/PlasmaPy/PlasmaPy-NEI",
+    "dateCreated": "2020-04-09",
+    "issueTracker": "https://github.com/PlasmaPy/PlasmaPy-NEI",
+    "name": "PlasmaPy-NEI",
+    "description": "Non-equilibrium ionization modeling of plasma",
+    "applicationCategory": "Plasma physics",
+    "developmentStatus": "wip",
+    "isPartOf": "https://www.plasmapy.org",
+    "funder": {
+        "@type": "Organization",
+        "name": "NASA, NSF, Smithsonian Institution"
+    },
+    "keywords": [
+        "non-equilibrium ionization"
+    ],
+    "programmingLanguage": [
+        "Python 3"
+    ],
+    "operatingSystem": [
+        "Linux",
+        "Windows",
+        "macOS"
+    ],
+    "softwareRequirements": [
+        "Python 3.7",
+        "plasmapy >= 0.3.1"
+    ],
+    "contributor": [
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0001-6628-8033",
+            "givenName": "Nicholas",
+            "familyName": "Murphy",
+            "email": "namurphy@cfa.harvard.edu",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Center for Astrophysics | Harvard & Smithsonian"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0001-6291-8843",
+            "givenName": "Dominik",
+            "familyName": "Stańczak",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "University of Warsaw"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-9258-4490",
+            "givenName": "Chengcai",
+            "familyName": "Shen",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Center for Astrophysics | Harvard & Smithsonian"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0003-3356-880X",
+            "givenName": "Marcus",
+            "familyName": "Dupont",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "NYU"
+            }
+        }
+    ]
+}
