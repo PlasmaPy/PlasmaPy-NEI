@@ -1,7 +1,13 @@
-# Licensed under a 3-clause BSD style license - see LICENSE.rst
+"""A Python package for non-equilibrium ionization modelingg of plasma."""
 
-from .version import __version__
-from .example_mod import do_primes
+import warnings
+
+try:
+    from .version import __version__
+except Exception as exc:
+    warnings.warn("Unable to import __version__")
+
+
 # Then you can be explicit to control what ends up in the namespace,
-__all__ = ['do_primes']
+__all__ = ['']
 
