@@ -10,7 +10,7 @@ resources:
   repositories:
   - repository: OpenAstronomy
     type: github
-    endpoint: PlasmaPy-NEI
+    endpoint: PlasmaPy
     name: OpenAstronomy/azure-pipelines-templates
     ref: master
 
