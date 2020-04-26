@@ -3,14 +3,14 @@ variables:
   CI_NAME: Azure Pipelines
   CI_BUILD_ID: $(Build.BuildId)
   CI_BUILD_URL: "https://dev.azure.com/plasmapy/plasmapy/_build/results?buildId=$(Build.BuildId)"
-  CIBW_BUILD: cp36-* cp37-* cp38-*
+  CIBW_BUILD: cp37-* cp38-*
   CIBW_SKIP: "*-win32 *-manylinux1_i686"
 
 resources:
   repositories:
   - repository: OpenAstronomy
     type: github
-    endpoint: PlasmaPy
+    endpoint: PlasmaPy-NEI
     name: OpenAstronomy/azure-pipelines-templates
     ref: master
 
@@ -36,8 +36,8 @@ jobs:
       - macos: py37
         name: py37_macos
 
-      - windows: py36
-        name: py36_windows
+      - windows: py37
+        name: py37_windows
 
       - linux: py37
         name: py37_linux
@@ -45,12 +45,12 @@ jobs:
       - linux: py38
         name: py38_linux
 
-      - linux: py36-conda
-        name: py36_conda
+      - linux: py37-conda
+        name: py37_conda
         libraries: {}
 
-      - linux: py36-astropy31
-        name: py36_astropy31
+      - linux: py37-astropy31
+        name: py37_astropy31
 
       - linux: py37-astropydev
         name: py37_astropydev
@@ -58,12 +58,12 @@ jobs:
       - linux: py37-numpydev
         name: py37_numpydev
 
-      - linux: py36-minimal-conda
-        name: py36_minimal_conda
+      - linux: py37-minimal-conda
+        name: py37_minimal_conda
         libraries: {}
 
-      - linux: py36-minimal-pypi-import
-        name: py36_minimal_pypi_import
+      - linux: py37-minimal-pypi-import
+        name: py37_minimal_pypi_import
 
 # On branches which aren't master, and not Pull Requests, build the wheels but only upload them on tags
 - ${{ if and(ne(variables['Build.Reason'], 'PullRequest'), not(contains(variables['Build.SourceBranch'], 'master'))) }}:
@@ -73,16 +73,16 @@ jobs:
       ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags/') }}:
         pypi_connection_name : 'pypi_endpoint'
       test_extras: 'dev'
-      test_command: 'pytest --pyargs plasmapy'
+      test_command: 'pytest --pyargs plasmapy_nei'
       submodules: false
       targets:
         - wheels_universal
         - sdist
       dependsOn:
         - py37_linux
-        - py36_windows
-        - py36_minimal_conda
-        - py36_conda
+        - py37_windows
+        - py37_minimal_conda
+        - py37_conda
         - py38_linux
-        - py36_astropy31
+        - py37_astropy31
         - py37_macos
