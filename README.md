@@ -2,6 +2,8 @@
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
 [![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy:openastronomy.org)
+[![Build Status](https://dev.azure.com/plasmapy/PlasmaPy-NEI/_apis/build/status/PlasmaPy.PlasmaPy-NEI?branchName=master)](https://dev.azure.com/plasmapy/PlasmaPy-NEI/_build/latest?definitionId=2&branchName=master)
+[![Documentation Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy-nei.readthedocs.io/en/latest/?badge=latest)
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 
 PlasmaPy-NEI will be an affiliated package of PlasmaPy designed to perform
