@@ -3,4 +3,4 @@
 
 def test_import():
     """Minimal test that importing this works."""
-    from plasmapy.nei import NEI
+    from plasmapy_nei.nei import NEI
