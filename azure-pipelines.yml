@@ -31,7 +31,6 @@ jobs:
   parameters:
     submodules: false
     coverage: codecov
-    posargs: -n=4
     envs:
       - macos: py37
         name: py37_macos
