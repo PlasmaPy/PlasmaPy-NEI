@@ -5,9 +5,6 @@ import os
 
 from setuptools import setup
 
-from extension_helpers import get_extensions
-
-
 VERSION_TEMPLATE = """
 # Note that we need to fall back to the hard-coded version if either
 # setuptools_scm can't be imported or setuptools_scm can't determine the
@@ -20,9 +17,8 @@ except Exception:
 """.lstrip()
 
 setup(
-    use_scm_version={'write_to': os.path.join('plasmapy_nei', 'version.py'),
-                     'write_to_template': VERSION_TEMPLATE},
-
-    ext_modules=get_extensions()
-
+    use_scm_version={
+        "write_to": os.path.join("plasmapy_nei", "version.py"),
+        "write_to_template": VERSION_TEMPLATE,
+    }
 )
