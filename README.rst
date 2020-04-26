@@ -12,6 +12,12 @@ This project is Copyright (c) PlasmaPy Developers and licensed under
 the terms of the BSD+Patent license. Additional licenses are found in the
 `licenses` folder.
 
+Acknowledgements
+----------------
+
+Development on PlasmaPy-NEI has been supported by NASA, NSF, and the
+Smithsonian Institution.
+
 Contributing
 ------------
 
