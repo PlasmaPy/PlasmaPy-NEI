@@ -44,26 +44,6 @@ jobs:
       - linux: py38
         name: py38_linux
 
-      - linux: py37-conda
-        name: py37_conda
-        libraries: {}
-
-      - linux: py37-astropy31
-        name: py37_astropy31
-
-      - linux: py37-astropydev
-        name: py37_astropydev
-
-      - linux: py37-numpydev
-        name: py37_numpydev
-
-      - linux: py37-minimal-conda
-        name: py37_minimal_conda
-        libraries: {}
-
-      - linux: py37-minimal-pypi-import
-        name: py37_minimal_pypi_import
-
 # On branches which aren't master, and not Pull Requests, build the wheels but only upload them on tags
 - ${{ if and(ne(variables['Build.Reason'], 'PullRequest'), not(contains(variables['Build.SourceBranch'], 'master'))) }}:
   - template: publish.yml@OpenAstronomy
@@ -80,8 +60,5 @@ jobs:
       dependsOn:
         - py37_linux
         - py37_windows
-        - py37_minimal_conda
-        - py37_conda
-        - py38_linux
-        - py37_astropy31
         - py37_macos
+        - py38_linux
