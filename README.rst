@@ -1,9 +1,17 @@
 PlasmaPy-NEI
 ------------
 
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
+[![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy:openastronomy.org)
+
+[![Build Status](https://travis-ci.org/PlasmaPy/PlasmaPy.svg?branch=master)](https://travis-ci.org/PlasmaPy/PlasmaPy)
+[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
+
+
 PlasmaPy-NEI will be an affiliated package of PlasmaPy designed to perform
 non-equilibrium ionization modeling of plasma.  Use cases include plasma in
-the solar wind and during coronal mass ejections.
+the solar wind and during coronal mass ejections.  Please read more on the
+`PlasmaPy-NEI online documentation <https://nei.plasmapy.org>`_.
 
 License
 -------
