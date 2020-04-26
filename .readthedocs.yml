@@ -5,7 +5,7 @@ formats: all
 python:
   version: 3.7
   install:
-    - requirements: requirements/automated-documentation-tests.txt
+    - requirements: requirements.txt
     - method: setuptools
       path: .
   system_packages: true
