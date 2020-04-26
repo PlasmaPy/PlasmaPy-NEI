@@ -1,21 +1,22 @@
-Package for non-equilibrium ionization of plasma that is currently under development
-------------------------------------------------------------------------------------
+PlasmaPy-NEI
+------------
+
+PlasmaPy-NEI will be an affiliated package of PlasmaPy designed to perform
+non-equilibrium ionization modeling of plasma.  Use cases include plasma in
+the solar wind and during coronal mass ejections.
 
 License
 -------
 
 This project is Copyright (c) PlasmaPy Developers and licensed under
-the terms of the BSD+Patent license. This package is based upon
-the `Openastronomy packaging guide <https://github.com/OpenAstronomy/packaging-guide>`_
-which is licensed under the BSD 3-clause licence. See the licenses folder for
-more information.
-
+the terms of the BSD+Patent license. Additional licenses are found in the
+`licenses` folder.
 
 Contributing
 ------------
 
 We love contributions! PlasmaPy-NEI is open source,
-built on open source, and we'd love to have you hang out in our community.
+built on open source, and we'd love to have you in our community.
 
 **Imposter syndrome disclaimer**: We want your help. No, really.
 
