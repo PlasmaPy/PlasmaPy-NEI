@@ -12,6 +12,7 @@ finally:
     del warnings
 
 from . import eigen
+from . import nei
 
 # Then you can be explicit to control what ends up in the namespace,
 __all__ = ["eigen"]
