@@ -6,8 +6,10 @@ try:
     from .version import __version__
 except Exception as exc:
     warnings.warn("Unable to import __version__")
-
+else:
+    del version
+finally:
+    del warnings
 
 # Then you can be explicit to control what ends up in the namespace,
-__all__ = ['']
-
+__all__ = [""]
