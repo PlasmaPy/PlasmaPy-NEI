@@ -1,7 +1,7 @@
 PlasmaPy-NEI Documentation
 ==========================
 
-The ``plasmapy_nei`` package will be an affiliated package of `PlasmaPy <https://docs.plasmapy.org>`_
+The ``plasmapy_nei`` package is being developed as an affiliated package of `PlasmaPy <https://docs.plasmapy.org>`_
 designed to perform non-equilibrium ionization modelling of plasma.
 Use cases include the solar wind and coronal mass ejections.
 
@@ -21,7 +21,8 @@ Eventually the charge states freeze out and remain roughly constant for longer t
 Similarly, low-density plasma that is suddenly heated by a supernova remnant shock wave will be out of ionization equilibrium for some time.
 In these situations, the charge state distributions must be found by evolving the time-dependent ionization equations.
 
-The purpose of the ``plasmapy_nei`` package is to enable students and scientists to perform NEI models of laboratory, heliospheric, and astrophysical plasma.
+The ``plasmapy_nei`` package is intended to enable students and scientists to perform NEI models of laboratory, heliospheric, and astrophysical plasma.
+The early versions of this package will account for collisional ionization, radiative recombination, and dielectronic recombination.  The time advance is calculated using the eigenvalue method.
 
 .. toctree::
    :maxdepth: 2
