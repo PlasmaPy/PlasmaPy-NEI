@@ -31,6 +31,4 @@ The early versions of this package will account for collisional ionization, radi
 Indices and tables
 ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
