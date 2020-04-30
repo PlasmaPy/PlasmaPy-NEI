@@ -52,7 +52,7 @@ class EigenData2:
 
     """
 
-    def __init__(self, element='H'):
+    def __init__(self, element="H"):
         """Read in the """
 
         self._element = element
@@ -61,17 +61,17 @@ class EigenData2:
         #
         # 1. Read ionization and recombination rates
         #
-        data_dir = __path__[0] + '/data/ionizrecombrates/chianti_8.07/'
-        filename = data_dir + 'ionrecomb_rate.h5'
-        f = h5py.File(filename, 'r')
+        data_dir = __path__[0] + "/data/ionizrecombrates/chianti_8.07/"
+        filename = data_dir + "ionrecomb_rate.h5"
+        f = h5py.File(filename, "r")
 
         atomic_numb = atomic.atomic_number(element)
         nstates = atomic_numb + 1
 
-        self._temperature_grid = f['te_gird'][:]
+        self._temperature_grid = f["te_gird"][:]
         ntemp = len(self._temperature_grid)
-        c_ori = f['ioniz_rate'][:]
-        r_ori = f['recomb_rate'][:]
+        c_ori = f["ioniz_rate"][:]
+        r_ori = f["recomb_rate"][:]
         f.close()
 
         #
@@ -80,10 +80,10 @@ class EigenData2:
         c_rate = np.zeros((ntemp, nstates))
         r_rate = np.zeros((ntemp, nstates))
         for ite in range(ntemp):
-            for i in range(nstates-1):
-                c_rate[ite, i] = c_ori[i, atomic_numb-1, ite]
+            for i in range(nstates - 1):
+                c_rate[ite, i] = c_ori[i, atomic_numb - 1, ite]
             for i in range(1, nstates):
-                r_rate[ite, i] = r_ori[i-1, atomic_numb-1, ite]
+                r_rate[ite, i] = r_ori[i - 1, atomic_numb - 1, ite]
 
         #
         # 2. Definet the grid size
@@ -95,24 +95,21 @@ class EigenData2:
         #
         # Compute eigenvalues and eigenvectors
         #
-        self._ionization_rate = np.ndarray(shape=(ntemp, nstates),
-                                           dtype=np.float64)
+        self._ionization_rate = np.ndarray(shape=(ntemp, nstates), dtype=np.float64)
 
-        self._recombination_rate = np.ndarray(shape=(ntemp, nstates),
-                                              dtype=np.float64)
+        self._recombination_rate = np.ndarray(shape=(ntemp, nstates), dtype=np.float64)
 
-        self._equilibrium_states = np.ndarray(shape=(ntemp, nstates),
-                                              dtype=np.float64)
+        self._equilibrium_states = np.ndarray(shape=(ntemp, nstates), dtype=np.float64)
 
-        self._eigenvalues = np.ndarray(shape=(ntemp, nstates),
-                                       dtype=np.float64)
+        self._eigenvalues = np.ndarray(shape=(ntemp, nstates), dtype=np.float64)
 
-        self._eigenvectors = np.ndarray(shape=(ntemp, nstates, nstates),
-                                        dtype=np.float64)
+        self._eigenvectors = np.ndarray(
+            shape=(ntemp, nstates, nstates), dtype=np.float64
+        )
 
         self._eigenvector_inverses = np.ndarray(
-            shape=(ntemp, nstates, nstates),
-            dtype=np.float64)
+            shape=(ntemp, nstates, nstates), dtype=np.float64
+        )
 
         #
         # Save ionization and recombination rates
@@ -144,18 +141,18 @@ class EigenData2:
                     A[ion, jon] = 0.0
 
             # Give coefficients
-            for ion in range(1, nstates-1):
-                A[ion, ion-1] = carr[ion-1]
-                A[ion, ion] = -(carr[ion]+rarr[ion])
-                A[ion, ion+1] = rarr[ion+1]
+            for ion in range(1, nstates - 1):
+                A[ion, ion - 1] = carr[ion - 1]
+                A[ion, ion] = -(carr[ion] + rarr[ion])
+                A[ion, ion + 1] = rarr[ion + 1]
 
             # The first row
             A[0, 0] = -carr[0]
             A[0, 1] = rarr[1]
 
             # The last row
-            A[nstates-1, nstates-2] = carr[nstates-2]
-            A[nstates-1, nstates-1] = -rarr[nstates-1]
+            A[nstates - 1, nstates - 2] = carr[nstates - 2]
+            A[nstates - 1, nstates - 1] = -rarr[nstates - 1]
 
             # Compute eigenvalues and eigenvectors using Scipy
             la, v = LA.eig(A)
@@ -198,14 +195,20 @@ class EigenData2:
         elif T_e == T_e_grid_min:
             return 0
         elif T_e > T_e_grid_max:
-            warnings.warn(f"Temperature exceeds the temperature grid "
-                          f"boundary: temperature index will be reset "
-                          f"to {self._ntemp - 1}", UserWarning)
-            return self._ntemp-1
+            warnings.warn(
+                f"Temperature exceeds the temperature grid "
+                f"boundary: temperature index will be reset "
+                f"to {self._ntemp - 1}",
+                UserWarning,
+            )
+            return self._ntemp - 1
         elif T_e < T_e_grid_min:
-            warnings.warn(f"Temperature is below the temperature grid "
-                          f"boundary: temperature index will be reset to "
-                          f"0.", UserWarning)
+            warnings.warn(
+                f"Temperature is below the temperature grid "
+                f"boundary: temperature index will be reset to "
+                f"0.",
+                UserWarning,
+            )
             return 0
 
         # TODO: Add a test to check that the temperature grid is monotonic
@@ -215,7 +218,7 @@ class EigenData2:
         index = res_ind[0]
         dte_l = abs(T_e - T_e_array[index - 1])  # re-check the neighbor point
         dte_r = abs(T_e - T_e_array[index])
-        if (dte_l <= dte_r):
+        if dte_l <= dte_r:
             index = index - 1
         return index
 
@@ -277,7 +280,6 @@ class EigenData2:
         else:
             raise AttributeError("The temperature has not been set.")
 
-
     def equilibrium_state(self, T_e=None, T_e_index=None):
         """Returns the equilibrium charge state distribution for the
         temperature specified in the class."""
@@ -302,19 +304,19 @@ class EigenData2:
 
         # The start index is 1.
         for i in range(nstates):
-            c[i+1] = ioniz_rate[i]
-            r[i+1] = recomb_rate[i]
+            c[i + 1] = ioniz_rate[i]
+            r[i + 1] = recomb_rate[i]
 
         # Set f1
         f[1] = 1.0
         # f2 = c1*f1/r2
-        f[2] = c[1]*f[1]/r[2]
+        f[2] = c[1] * f[1] / r[2]
         #
         # For Hydrogen, the following loop is not necessary.
         #
-        if (natom <= 1):
-            f[1] = 1.0/(1.0 + c[1]/r[2])
-            f[2] = c[1]*f[1]/r[2]
+        if natom <= 1:
+            f[1] = 1.0 / (1.0 + c[1] / r[2])
+            f[2] = c[1] * f[1] / r[2]
             conce[0:2] = f[1:3]
             return conce
 
@@ -323,20 +325,20 @@ class EigenData2:
         #
         # f(i+1) = -(c(i-1)*f(i-1) - (c(i)+r(i)*f(i)))/r(i+1)
         for k in range(2, natom):
-            f[k+1] = (-c[k-1]*f[k-1] + (c[k]+r[k])*f[k])/r[k+1]
+            f[k + 1] = (-c[k - 1] * f[k - 1] + (c[k] + r[k]) * f[k]) / r[k + 1]
 
         # f(natom+1) = c(natom)*f(natom)/r(natom+1)
-        f[natom+1] = c[natom]*f[natom]/r[natom+1]
+        f[natom + 1] = c[natom] * f[natom] / r[natom + 1]
         # f1 = 1/sum(f(*))
-        f[1] = 1.0/np.sum(f)
+        f[1] = 1.0 / np.sum(f)
         # f2 = c1*f1/r2
-        f[2] = c[1]*f[1]/r[2]
+        f[2] = c[1] * f[1] / r[2]
         # f(i+1) = -(c(i-1)*f(i-1) - (c(i)+r(i)*f(i)))/r(i+1)
         for k in range(2, natom):
-            f[k+1] = (-c[k-1]*f[k-1] + (c[k]+r[k])*f[k])/r[k+1]
+            f[k + 1] = (-c[k - 1] * f[k - 1] + (c[k] + r[k]) * f[k]) / r[k + 1]
 
         # f(natom+1) = c(natom)*f(natom)/r(natom+1)
-        f[natom+1] = c[natom]*f[natom]/r[natom+1]
+        f[natom + 1] = c[natom] * f[natom] / r[natom + 1]
         #
-        conce[0:nstates] = f[1:nstates+1]
+        conce[0:nstates] = f[1 : nstates + 1]
         return conce

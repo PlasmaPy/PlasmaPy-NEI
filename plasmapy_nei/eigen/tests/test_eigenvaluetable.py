@@ -5,29 +5,31 @@ from plasmapy import atomic
 from ..eigenvaluetable import EigenData2
 import pytest
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Set elements and temperary list as testing inputs
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 natom_list = np.arange(1, 27)
 natom = 8
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # function: Time-Advance solover
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def func_solver_eigenval(natom, te, ne, dt, f0, table):
     """
         The testing function for performing time_advance calculations.
     """
 
     common_index = table._get_temperature_index(te)
-    evals = table.eigenvalues(T_e_index=common_index) # find eigenvalues on the chosen Te node
+    evals = table.eigenvalues(
+        T_e_index=common_index
+    )  # find eigenvalues on the chosen Te node
     evect = table.eigenvectors(T_e_index=common_index)
     evect_invers = table.eigenvector_inverses(T_e_index=common_index)
 
     # define the temperary diagonal matrix
-    diagona_evals = np.zeros((natom+1, natom+1))
-    for ii in range(0, natom+1):
-        diagona_evals[ii,ii] = np.exp(evals[ii]*dt*ne)
+    diagona_evals = np.zeros((natom + 1, natom + 1))
+    for ii in range(0, natom + 1):
+        diagona_evals[ii, ii] = np.exp(evals[ii] * dt * ne)
 
     # matirx operation
     matrix_1 = np.dot(diagona_evals, evect)
@@ -38,10 +40,11 @@ def func_solver_eigenval(natom, te, ne, dt, f0, table):
 
     # re-check the smallest value
     minconce = 1.0e-15
-    for ii in np.arange(0, natom+1, dtype=np.int):
-        if (abs(ft[ii]) <= minconce):
+    for ii in np.arange(0, natom + 1, dtype=np.int):
+        if abs(ft[ii]) <= minconce:
             ft[ii] = 0.0
     return ft
+
 
 # [Nick] Temporarily commenting this test out to check if it may be
 # causing problems in the tests on Travis CI because of the dependence
@@ -49,8 +52,8 @@ def func_solver_eigenval(natom, te, ne, dt, f0, table):
 # while still working when we run `pytest` or `python setup.py test`
 # locally.
 
-#@pytest.mark.parametrize('natom', natom_list)
-#def test_equlibrium_state_vs_chiantipy(natom=8):
+# @pytest.mark.parametrize('natom', natom_list)
+# def test_equlibrium_state_vs_chiantipy(natom=8):
 #    """
 #        Test equilibrium states saved in EigenData2 and compare them with
 #        Outputs from ChiantiPy.
@@ -76,7 +79,8 @@ def func_solver_eigenval(natom, te, ne, dt, f0, table):
 #        assert ch_conce.all() == table_conce.all()
 #    return
 
-@pytest.mark.parametrize('natom', [1, 2, 6, 7, 8])
+
+@pytest.mark.parametrize("natom", [1, 2, 6, 7, 8])
 def test_reachequlibrium_state(natom):
     """
         Starting the random initial distribution, the charge states will reach
@@ -90,31 +94,31 @@ def test_reachequlibrium_state(natom):
     # Initial conditions, set plasma temperature, density and dt
     #
     element_symbol = atomic.atomic_symbol(int(natom))
-    te0 = 1.0e+6
-    ne0 = 1.0e+8
+    te0 = 1.0e6
+    ne0 = 1.0e8
 
     # Start from any ionizaiont states, e.g., Te = 4.0d4 K,
     time = 0
     table = EigenData2(element=natom)
     f0 = table.equilibrium_state(T_e=4.0e4)
 
-    print('START test_reachequlibrium_state:')
-    print(f'time_sta = ', time)
-    print(f'INI: ', f0)
-    print(f'Sum(f0) = ', np.sum(f0))
+    print("START test_reachequlibrium_state:")
+    print(f"time_sta = ", time)
+    print(f"INI: ", f0)
+    print(f"Sum(f0) = ", np.sum(f0))
 
     # After time + dt:
-    dt = 1.0e+7
-    ft = func_solver_eigenval(natom, te0, ne0, time+dt, f0, table)
+    dt = 1.0e7
+    ft = func_solver_eigenval(natom, te0, ne0, time + dt, f0, table)
 
-    print(f'time_end = ', time+dt)
-    print(f'NEI:', ft)
-    print(f'Sum(ft) = ', np.sum(ft))
-    print(f'EI :', table.equilibrium_state(T_e=te0))
+    print(f"time_end = ", time + dt)
+    print(f"NEI:", ft)
+    print(f"Sum(ft) = ", np.sum(ft))
+    print(f"EI :", table.equilibrium_state(T_e=te0))
     print("End Test.\n")
 
-    assert np.isclose(np.sum(ft), 1), 'np.sum(ft) is not approximately 1'
-    assert np.isclose(np.sum(f0), 1), 'np.sum(f0) is not approximately 1'
+    assert np.isclose(np.sum(ft), 1), "np.sum(ft) is not approximately 1"
+    assert np.isclose(np.sum(f0), 1), "np.sum(f0) is not approximately 1"
     assert np.allclose(ft, table.equilibrium_state(T_e=te0))
 
 
@@ -131,41 +135,42 @@ def test_reachequlibrium_state_multisteps(natom=8):
     # Initial conditions, set plasma temperature, density and dt
     #
     element_symbol = atomic.atomic_symbol(int(natom))
-    te0 = 1.0e+6 # unit: K
-    ne0 = 1.0e+8 # unit: cm^-3
+    te0 = 1.0e6  # unit: K
+    ne0 = 1.0e8  # unit: cm^-3
 
     # Start from any ionizaiont states, e.g., Te = 4.0d4 K,
     time = 0
     table = EigenData2(element=natom)
-    f0 = table.equilibrium_state(T_e=4.0e+4)
+    f0 = table.equilibrium_state(T_e=4.0e4)
 
-    print('START test_reachequlibrium_state_multisteps:')
-    print(f'time_sta = ', time)
-    print(f'INI: ', f0)
-    print(f'Sum(f0) = ', np.sum(f0))
+    print("START test_reachequlibrium_state_multisteps:")
+    print(f"time_sta = ", time)
+    print(f"INI: ", f0)
+    print(f"Sum(f0) = ", np.sum(f0))
 
     # After time + dt:
-    dt = 100000.0 # unit: second
+    dt = 100000.0  # unit: second
 
     # Enter the time loop:
     for it in range(100):
-        ft = func_solver_eigenval(natom, te0, ne0, time+dt, f0, table)
+        ft = func_solver_eigenval(natom, te0, ne0, time + dt, f0, table)
         f0 = np.copy(ft)
-        time = time+dt
+        time = time + dt
 
-    print(f'time_end = ', time+dt)
-    print(f'NEI:', ft)
-    print(f'Sum(ft) = ', np.sum(ft))
+    print(f"time_end = ", time + dt)
+    print(f"NEI:", ft)
+    print(f"Sum(ft) = ", np.sum(ft))
 
     assert np.isclose(np.sum(ft), 1)
 
     print(f"EI :", table.equilibrium_state(T_e=te0))
     print("End Test.\n")
 
+
 # Temporarily test only lighter elements due to Travis CI delays
 
-#@pytest.mark.parametrize('atomic_numb', np.arange(1, 27))
-@pytest.mark.parametrize('atomic_numb', np.arange(1, 10))
+# @pytest.mark.parametrize('atomic_numb', np.arange(1, 27))
+@pytest.mark.parametrize("atomic_numb", np.arange(1, 10))
 def test_element_range(atomic_numb):
     """
     Function test_element_range:
@@ -177,4 +182,4 @@ def test_element_range(atomic_numb):
     except Exception as exc:
         raise Exception(f"Problem with atomic number={atomic_numb}.") from exc
 
-    eigen=0  # attempt to clear up memory
+    eigen = 0  # attempt to clear up memory
