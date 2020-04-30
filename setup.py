@@ -21,4 +21,5 @@ setup(
         "write_to_template": VERSION_TEMPLATE,
     },
     install_requires=["plasmapy>=0.3.1", "numpy>=1.16", "astropy>=3.2", "h5py"],
+    include_package_data=True,
 )
