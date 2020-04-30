@@ -20,5 +20,5 @@ setup(
         "write_to": os.path.join("plasmapy_nei", "version.py"),
         "write_to_template": VERSION_TEMPLATE,
     },
-    install_requires=["plasmapy>=0.3.1", "numpy>=1.16", "astropy>=3.2"],
+    install_requires=["plasmapy>=0.3.1", "numpy>=1.16", "astropy>=3.2", "h5py"],
 )
