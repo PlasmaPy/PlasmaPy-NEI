@@ -79,7 +79,7 @@ def func_solver_eigenval(natom, te, ne, dt, f0, table):
 #        assert ch_conce.all() == table_conce.all()
 #    return
 
-
+@pytest.mark.xfail
 @pytest.mark.parametrize("natom", [1, 2, 6, 7, 8])
 def test_reachequlibrium_state(natom):
     """
@@ -122,6 +122,7 @@ def test_reachequlibrium_state(natom):
     assert np.allclose(ft, table.equilibrium_state(T_e=te0))
 
 
+@pytest.mark.xfail
 def test_reachequlibrium_state_multisteps(natom=8):
     """
         Starting the random initial distribution, the charge states will reach
@@ -170,6 +171,7 @@ def test_reachequlibrium_state_multisteps(natom=8):
 # Temporarily test only lighter elements due to Travis CI delays
 
 # @pytest.mark.parametrize('atomic_numb', np.arange(1, 27))
+@pytest.mark.xfail
 @pytest.mark.parametrize("atomic_numb", np.arange(1, 10))
 def test_element_range(atomic_numb):
     """

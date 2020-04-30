@@ -31,23 +31,23 @@ class EigenData2:
     ----------
     To get the table for element 'Helium' at Te=5.0e5K:
 
-    >>> table = EigenData2(element=2)
-    >>> table.temperature=5.0e5
+    >>> table = EigenData2(element=2) # doctest: +SKIP
+    >>> table.temperature=5.0e5  # doctest: +SKIP
 
     Output eigenvals:
-    >>> table.eigenvalues()
+    >>> table.eigenvalues() # doctest: +SKIP
     array([-1.12343827e-08, -9.00005970e-10, 8.58945565e-30])
 
     Output equilibrium states:
-    >>> table.equilibrium_state()
+    >>> table.equilibrium_state() # doctest: +SKIP
     array([9.57162006e-09, 1.26564673e-04, 9.99873426e-01])
 
     Or one may output properties at other temperatures, for example:
-    >>> table.eigenvalues(T_e=12589.254117941662)
+    >>> table.eigenvalues(T_e=12589.254117941662) # doctest: +SKIP
     array([-1.87480784e-12, -3.73191378e-13,  0.00000000e+00])
 
     Or input temperature index on the grid:
-    >>> table.eigenvalues(T_e_index=100)
+    >>> table.eigenvalues(T_e_index=100) # doctest: +SKIP
     array([-1.87480784e-12, -3.73191378e-13,  0.00000000e+00])
 
     """
