@@ -27,7 +27,7 @@ trigger:
     - '*post*'
 
 jobs:
-- template: run-tox-env.yml@OpenAstronomy
+- template: run-tox-env.yml
   parameters:
     submodules: false
     coverage: codecov
