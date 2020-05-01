@@ -1,6 +1,6 @@
 """Contains classes to represent non-equilibrium ionization simulations."""
 
-__all__ = ["NEI", "NEIError"]
+__all__ = ["NEI", "NEIError", "SimulationResults"]
 
 
 import numpy as np
@@ -38,7 +38,7 @@ class NEIError(Exception):
     pass
 
 
-class Simulation:
+class SimulationResults:
     """
     Results from a non-equilibrium ionization simulation.
 
@@ -245,7 +245,6 @@ class Simulation:
 
         The keys are the atomic symbols and the values are a `float`
         representing that element's elemental abundance.
-
         """
         return self._abundances
 
@@ -257,7 +256,6 @@ class Simulation:
         The keys of this dictionary are atomic symbols.  The values are
         2D arrays where the first index refers to the time step and the
         second index refers to the integer charge.
-
         """
         return self._ionic_fractions
 
@@ -430,9 +428,8 @@ class NEI:
     Notes
     -----
     The ionization and recombination rates are from Chianti version
-    8.x.  These rates include radiative and dielectronic recombination.
+    8.7.  These rates include radiative and dielectronic recombination.
     Photoionization is not included.
-
     """
 
     def __init__(
@@ -552,7 +549,6 @@ class NEI:
         neither `T_e` or `time` is provided and the temperature for the
         simulation is given by a constant, the this method will assume
         that `T_e` is the temperature of the simulation.
-
         """
 
         if T_e is not None and time is not None:
@@ -586,6 +582,7 @@ class NEI:
 
     @property
     def elements(self) -> List[str]:
+        """A `list` of the elements."""
         return self._elements
 
     @elements.setter
@@ -741,6 +738,7 @@ class NEI:
 
     @property
     def dt_min(self) -> u.Quantity:
+        """The minimum time step."""
         return self._dt_min
 
     @dt_min.setter
@@ -993,7 +991,7 @@ class NEI:
             raise TypeError("Expecting an IonizationStates instance.")
 
     @property
-    def results(self) -> Simulation:
+    def results(self) -> SimulationResults:
         """
         Return the `~nei.classes.Simulation` class instance that
         corresponds to the simulation results.
@@ -1017,7 +1015,7 @@ class NEI:
 
     def _initialize_simulation(self):
 
-        self._results = Simulation(
+        self._results = SimulationResults(
             initial=self.initial,
             n_init=self.hydrogen_number_density(self.time_start),
             T_e_init=self.electron_temperature(self.time_start),
@@ -1027,7 +1025,7 @@ class NEI:
         self._old_time = self.time_start.to(u.s)
         self._new_time = self.time_start.to(u.s)
 
-    def simulate(self) -> Simulation:
+    def simulate(self) -> SimulationResults:
         """
         Perform a non-equilibrium ionization simulation.
 

@@ -4,6 +4,7 @@ import warnings
 
 try:
     from .version import __version__
+
     del version
 except Exception as exc:
     warnings.warn("Unable to import __version__")
