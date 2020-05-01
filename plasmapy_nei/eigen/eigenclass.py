@@ -306,7 +306,7 @@ class EigenData:
         """
         if T_e_index is not None:
             return self._eigenvalues[T_e_index, :]
-        elif T_e:
+        elif T_e is not None:
             T_e_index = self._get_temperature_index(T_e)
             return self._eigenvalues[T_e_index, :]
         elif self.temperature:
