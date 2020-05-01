@@ -122,25 +122,25 @@ class SimulationResults:
 
         Parameters
         ----------
-        new_time: ~astropy.units.Quantity
+        new_time
             The time associated with this time step.
 
         new_ionfracs: dict
             The new ionization fractions for this time step.  The keys
             of this `dict` are the atomic symbols of the elements being
             tracked, and with the corresponding value being an
-            `~numpy.ndarray` representing the ionic fractions.  Each
+            ``numpy.ndarray`` representing the ionic fractions.  Each
             element's array must have a length of the atomic number plus
             one, and be normalized to one with all values between zero
             and one.
 
-        new_n: ~astropy.units.Quantity
+        new_n
             The new number density scaling factor for this time step.
             The number densities of each ionic species will be the
             product of this scaling factor, the element's abundance, and
-            the ionic fraction given in `new_ionfracs`.
+            the ionic fraction given in ``new_ionfracs``.
 
-        new_T_e: ~astropy.units.Quantity
+        new_T_e
             The new electron temperature.
 
         """
@@ -190,7 +190,7 @@ class SimulationResults:
 
         This method removes the excess elements from each array that
         did not end up getting used for a time step in the simulation
-        and sets the `last_step` attribute.
+        and sets the ``last_step`` attribute.
 
         """
         nsteps = self._index
@@ -264,7 +264,7 @@ class SimulationResults:
         """
         Return the number densities over the course of the simulation.
 
-        The keys of `number_densities` are atomic symbols.  The values
+        The keys of ``number_densities`` are atomic symbols.  The values
         are 2D arrays with units of number density where the first index
         refers to the time step and the second index is the integer
         charge.
@@ -278,7 +278,7 @@ class SimulationResults:
         The number densities of each element over the course of the
         simulation.
 
-        The keys of `n_elem` are atomic symbols.  The values are 1D
+        The keys of ``n_elem`` are atomic symbols.  The values are 1D
         arrays with units of number density where the index refers to
         the time step.
 
@@ -322,48 +322,48 @@ class NEI:
     ----------
     inputs
 
-    T_e: `~astropy.units.Quantity` or `callable`
+    T_e: astropy.units.Quantity or `callable`
         The electron temperature, which may be a constant, an array of
         temperatures corresponding to the times in `time_input`, or a
         function that yields the temperature as a function of time.
 
-    n: `~astropy.units.Quantity` or `callable`
+    n: astropy.units.Quantity or `callable`
         The number density multiplicative factor.  The number density of
-        each element will be `n` times the abundance given in
-        `abundances`.  For example, if `abundance['H'] = 1`, then this
+        each element will be ``n`` times the abundance given in
+        ``abundances``.  For example, if ``abundance['H'] = 1``, then this
         will correspond to the number density of hydrogen (including
         neutral hydrogen and protons).  This factor may be a constant,
         an array of number densities over time, or a function that
         yields a number density as a function of time.
 
-    time_input: ~astropy.units.Quantity, optional
-        An array containing the times associated with `n` and `T_e` in
+    time_input: astropy.units.Quantity, optional
+        An array containing the times associated with ``n`` and ``T_e`` in
         units of time.
 
-    time_start: ~astropy.units.Quantity, optional
+    time_start: astropy.units.Quantity, optional
         The start time for the simulation.  If density and/or
         temperature are given by arrays, then this argument must be
-        greater than `time_input[0]`.  If this argument is not supplied,
-        then `time_start` defaults to `time_input[0]` (if given) and
+        greater than ``time_input[0]``.  If this argument is not supplied,
+        then ``time_start`` defaults to ``time_input[0]`` (if given) and
         zero seconds otherwise.
 
-    time_max: ~astropy.units.Quantity
+    time_max: astropy.units.Quantity
         The maximum time for the simulation.  If density and/or
         temperature are given by arrays, then this argument must be less
-        than `time_input[-1]`.
+        than ``time_input[-1]``.
 
     max_steps: `int`
         The maximum number of time steps to be taken during a
         simulation.
 
-    dt: `~astropy.units.Quantity`
-        The time step.  If `adapt_dt` is `False`, then `dt` is the time
-        step for the whole simulation.
+    dt: astropy.units.Quantity
+        The time step.  If ``adapt_dt`` is `False`, then ``dt`` is the
+        time step for the whole simulation.
 
-    dt_max: `~astropy.units.Quantity`
+    dt_max: astropy.units.Quantity
         The maximum time step to be used with an adaptive time step.
 
-    dt_min: `~astropy.units.Quantity`
+    dt_min: astropy.units.Quantity
         The minimum time step to be used with an adaptive time step.
 
     adapt_dt: `bool`
@@ -373,7 +373,7 @@ class NEI:
 
     safety_factor: `float` or `int`
         A multiplicative factor to multiply by the time step when
-        `adapt_dt` is `True`.  Lower values improve accuracy, whereas
+        ``adapt_dt`` is `True`.  Lower values improve accuracy, whereas
         higher values reduce computational time.  Not yet implemented.
 
     tol: float
@@ -381,7 +381,7 @@ class NEI:
 
     verbose: bool, optional
         A flag stating whether or not to print out information for every
-        time step. Setting `verbose` to `True` is useful for testing.
+        time step. Setting ``verbose`` to `True` is useful for testing.
         Defaults to `False`.
 
     abundances: dict
@@ -408,12 +408,12 @@ class NEI:
 
     >>> results = sim.simulate()
 
-    The initial results are stored in the `initial` attribute.
+    The initial results are stored in the ``initial`` attribute.
 
     >>> sim.initial.ionic_fractions['H']
     array([0.9, 0.1])
 
-    The final results can be access with the `final` attribute.
+    The final results can be access with the ``final`` attribute.
 
     >>> sim.final.ionic_fractions['H']
     array([0.16665179, 0.83334821])
@@ -422,7 +422,7 @@ class NEI:
     >>> sim.final.T_e
     <Quantity 40000. K>
 
-    Both `initial` and `final` are instances of the `IonizationStates`
+    Both ``initial`` and ``final`` are instances of the ``IonizationStates``
     class.
 
     Notes
@@ -530,25 +530,25 @@ class NEI:
 
         Parameters
         ----------
-        T_e: ~astropy.units.Quantity, optional
+        T_e: astropy.units.Quantity, optional
             The electron temperature in units that can be converted to
             kelvin.
 
-        time: ~astropy.units.Quantity, optional
+        time: astropy.units.Quantity, optional
             The time in units that can be converted to seconds.
 
         Returns
         -------
-        equil_ionfracs: dict
+        equil_ionfracs: `dict`
             The equilibrium ionic fractions for the elements contained
             within this class
 
         Notes
         -----
-        Only one of `T_e` and `time` may be included as an argument.  If
-        neither `T_e` or `time` is provided and the temperature for the
-        simulation is given by a constant, the this method will assume
-        that `T_e` is the temperature of the simulation.
+        Only one of ``T_e`` and ``time`` may be included as an argument.
+        If neither ``T_e`` or ``time`` is provided and the temperature
+        for the simulation is given by a constant, the this method will
+        assume that ``T_e`` is the temperature of the simulation.
         """
 
         if T_e is not None and time is not None:
@@ -619,17 +619,17 @@ class NEI:
         try:
             value = float(value)
         except Exception as exc:
-            raise TypeError("Invalid tolerance.")
+            raise TypeError(f"Invalid tolerance: {value}") from exc
         if not 0 <= value < 1:
             raise ValueError("Need 0 <= tol < 1.")
         self._tol = value
 
     @property
-    def time_input(self) -> Optional[u.Quantity]:
+    def time_input(self) -> Optional[u.s]:
         return self._time_input
 
     @time_input.setter
-    def time_input(self, times: Optional[u.Quantity]):
+    def time_input(self, times: Optional[u.s]):
         if times is None:
             self._time_input = None
         elif isinstance(times, u.Quantity):
@@ -646,12 +646,12 @@ class NEI:
             raise TypeError("Invalid time_input.")
 
     @property
-    def time_start(self) -> u.Quantity:
+    def time_start(self) -> u.s:
         """The start time of the simulation."""
         return self._time_start
 
     @time_start.setter
-    def time_start(self, time: u.Quantity):
+    def time_start(self, time: u.s):
         if time is None:
             self._time_start = 0.0 * u.s
         elif isinstance(time, u.Quantity):
@@ -674,12 +674,12 @@ class NEI:
             raise TypeError("Invalid time_start.") from None
 
     @property
-    def time_max(self) -> u.Quantity:
+    def time_max(self) -> u.s:
         """The maximum time allowed for the simulation."""
         return self._time_max
 
     @time_max.setter
-    def time_max(self, time: u.Quantity):
+    def time_max(self, time: u.s):
         if time is None:
             self._time_max = (
                 self.time_input[-1] if self.time_input is not None else np.inf * u.s
@@ -720,12 +720,12 @@ class NEI:
             raise TypeError("Invalid value for adapt_dt")
 
     @property
-    def dt_input(self) -> Optional[u.Quantity]:
+    def dt_input(self) -> Optional[u.s]:
         """Return the inputted time step."""
         return self._dt_input
 
     @dt_input.setter
-    def dt_input(self, dt: Optional[u.Quantity]):
+    def dt_input(self, dt: Optional[u.s]):
         if dt is None:
             self._dt_input = None
         elif isinstance(dt, u.Quantity):
@@ -737,12 +737,12 @@ class NEI:
                 raise NEIError("Invalid dt.")
 
     @property
-    def dt_min(self) -> u.Quantity:
+    def dt_min(self) -> u.s:
         """The minimum time step."""
         return self._dt_min
 
     @dt_min.setter
-    def dt_min(self, value: u.Quantity):
+    def dt_min(self, value: u.s):
         if not isinstance(value, u.Quantity):
             raise TypeError("dt_min must be a Quantity.")
         try:
@@ -816,16 +816,16 @@ class NEI:
     @u.quantity_input
     def in_time_interval(self, time: u.s, buffer: u.s = 1e-9 * u.s):
         """
-        Return `True` if the `time` is between `time_start - buffer` and
-        `time_max + buffer` , and `False` otherwise.
+        Return `True` if the ``time`` is between ``time_start - buffer``
+        and ``time_max + buffer`` , and `False` otherwise.
 
         Raises
         ------
         TypeError
-            If `time` or `buffer` is not a `~astropy.units.Quantity`
+            If ``time`` or ``buffer`` is not a ``astropy.units.Quantity``
 
-        `~astropy.units.UnitsError`
-            If `time` or `buffer` is not in units of time.
+        astropy.units.UnitsError
+            If ``time`` or ``buffer`` is not in units of time.
 
         """
         return self.time_start - buffer <= time <= self.time_max + buffer
@@ -966,7 +966,8 @@ class NEI:
     @property
     def EigenDataDict(self) -> Dict[str, EigenData]:
         """
-        Return a `dict` containing `~nei.class
+        Return a `dict` containing `~plasmapy.eigen.EigenData` instances
+        for each element.
         """
         return self._EigenDataDict
 
@@ -993,7 +994,7 @@ class NEI:
     @property
     def results(self) -> SimulationResults:
         """
-        Return the `~nei.classes.Simulation` class instance that
+        Return the `~plasmapy_nei.nei.SimulationResults` class instance that
         corresponds to the simulation results.
 
         """
@@ -1031,10 +1032,10 @@ class NEI:
 
         Returns
         -------
-        results: ~nei.classes.Simulation
+        results: `~plasmapy_nei.classes.Simulation`
             The results from the simulation (which are also stored in
-            the `results` attribute of the `~nei.classes.NEI` instance
-            this method was called from.
+            the ``results`` attribute of the `~plasmapy_nei.nei.NEI`
+            instance this method was called from.
 
         """
 
@@ -1208,25 +1209,25 @@ class NEI:
 
         Notes
         -----
-        If `dt` is not `None`, then the time step will be set to `dt`.
+        If ``dt`` is not `None`, then the time step will be set to ``dt``.
 
-        If `dt` is not set and the `adapt_dt` attribute of an
-        `~nei.classes.NEI` instance is `True`, then this method will
+        If ``dt`` is not set and the ``adapt_dt`` attribute of an
+        `~plasmapy_nei.nei.NEI` instance is `True`, then this method will
         calculate the time step corresponding to how long it will be
         until the temperature rises or drops into the next temperature
-        bin.  If this time step is between `dtmin` and `dtmax`, then
+        bin.  If this time step is between ``dtmin`` and ``dtmax``, then
 
-        If `dt` is not set and the `adapt_dt` attribute is `False`, then
-        this method will set the time step as what was inputted to the
-        `~nei.classes.NEI` class upon instantiation in the `dt` argument
-        or through the `~nei.classes.NEI` class's `dt_input` attribute.
+        If ``dt`` is not set and the ``adapt_dt`` attribute is `False`,
+        then this method will set the time step as what was inputted to
+        the `~plasmapy_nei.nei.NEI` class upon instantiation in the
+        ``dt`` argument or through the `~plasmapy_nei.nei.NEI` class's
+        ``dt_input`` attribute.
 
         Raises
         ------
-        ~nei.classes.NEIError
-            If the time step cannot be set, for example if the `dt`
+        ~plasmapy_nei.nei.NEIError
+            If the time step cannot be set, for example if the ``dt``
             argument is invalid or the time step cannot be adapted.
-
         """
 
         if dt is not None:
@@ -1255,9 +1256,7 @@ class NEI:
             self._dt = self._new_time - self._old_time
 
     def time_advance(self):
-        """
-        Advance the simulation by one time step.
-        """
+        """Advance the simulation by one time step."""
         # TODO: Expand docstring and include equations!
 
         # TODO: Fully implement units into this.
@@ -1318,7 +1317,7 @@ class NEI:
 
     def save(self, filename: str = "nei.h5"):
         """
-        Save the `~nei.classes.NEI` instance to an HDF5 file.  Not
+        Save the `~plasmapy_nei.nei.NEI` instance to an HDF5 file.  Not
         implemented.
         """
         raise NotImplementedError
