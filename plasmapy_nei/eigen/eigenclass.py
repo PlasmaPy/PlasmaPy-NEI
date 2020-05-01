@@ -304,7 +304,7 @@ class EigenData:
         Returns the eigenvalues for the ionization and recombination
         rates for the temperature specified in the class.
         """
-        if T_e_index:
+        if T_e_index is not None:
             return self._eigenvalues[T_e_index, :]
         elif T_e:
             T_e_index = self._get_temperature_index(T_e)
