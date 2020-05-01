@@ -26,6 +26,12 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, natom):
 
     Parameters
     ----------
+    ioniz_rate
+
+    recomb_rate
+
+    natom
+        The atomic number.
     """
     nstates = natom + 1
     conce = np.zeros(nstates)
