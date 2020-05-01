@@ -13,7 +13,6 @@ from plasmapy.atomic import IonizationStates
 import warnings
 
 
-
 # TODO: Allow this to keep track of velocity and position too, and
 # eventually to have density and temperature be able to be functions of
 # position.  (and more complicated expressions for density and
@@ -33,6 +32,7 @@ import warnings
 #       of IonizationStates.  This workaround exists because I forgot
 #       to put in an `elements` attribute in IonizationStates, and
 #       should be corrected.
+
 
 class NEIError(Exception):
     pass
@@ -479,11 +479,7 @@ class NEI:
             n_init = self.hydrogen_number_density(self.time_start)
 
             self.initial = IonizationStates(
-                inputs=inputs,
-                abundances=abundances,
-                T_e=T_e_init,
-                n=n_init,
-                tol=tol,
+                inputs=inputs, abundances=abundances, T_e=T_e_init, n=n_init, tol=tol,
             )
 
             self.tol = tol
@@ -988,7 +984,9 @@ class NEI:
     def initial(self, initial_states: Optional[IonizationStates]):
         if isinstance(initial_states, IonizationStates):
             self._initial = initial_states
-            self._elements = initial_states.ionic_fractions.keys()  # TODO IonizationStates
+            self._elements = (
+                initial_states.ionic_fractions.keys()
+            )  # TODO IonizationStates
         elif initial_states is None:
             self._ionstates = None
         else:
@@ -1071,9 +1069,7 @@ class NEI:
         self._final = IonizationStates(
             inputs=final_ionfracs,
             abundances=self.abundances,
-            n=np.sum(
-                self.results.number_densities["H"][-1, :]
-            ),  # modify this later?,
+            n=np.sum(self.results.number_densities["H"][-1, :]),  # modify this later?,
             T_e=self.results.T_e[-1],
             tol=1e-6,
         )
