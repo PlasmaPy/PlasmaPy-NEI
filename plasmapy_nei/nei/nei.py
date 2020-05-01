@@ -35,6 +35,7 @@ import warnings
 
 
 class NEIError(Exception):
+    """For when there are errors in setting up or performing NEI simulations."""
     pass
 
 
@@ -49,10 +50,10 @@ class SimulationResults:
         states of different elements and plasma properties as the
         initial conditions.
 
-    n_init: astropy.units.quantity
+    n_init: astropy.units.Quantity
         The initial number density scaling factor.
 
-    T_e_init: astropy.units.quantity
+    T_e_init: astropy.units.Quantity
         The initial electron temperature.
 
     max_steps: int
