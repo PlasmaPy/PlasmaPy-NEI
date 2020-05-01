@@ -625,11 +625,11 @@ class NEI:
         self._tol = value
 
     @property
-    def time_input(self) -> Optional[u.s]:
+    def time_input(self) -> u.s:
         return self._time_input
 
     @time_input.setter
-    def time_input(self, times: Optional[u.s]):
+    def time_input(self, times: u.s):
         if times is None:
             self._time_input = None
         elif isinstance(times, u.Quantity):
@@ -720,12 +720,12 @@ class NEI:
             raise TypeError("Invalid value for adapt_dt")
 
     @property
-    def dt_input(self) -> Optional[u.s]:
+    def dt_input(self) -> u.s:
         """Return the inputted time step."""
         return self._dt_input
 
     @dt_input.setter
-    def dt_input(self, dt: Optional[u.s]):
+    def dt_input(self, dt: u.s):
         if dt is None:
             self._dt_input = None
         elif isinstance(dt, u.Quantity):
@@ -760,17 +760,17 @@ class NEI:
         self._dt_min = value
 
     @property
-    def dt_max(self) -> u.Quantity:
+    def dt_max(self) -> u.s:
         return self._dt_max
 
     @dt_max.setter
-    def dt_max(self, value: u.Quantity):
+    def dt_max(self, value: u.s):
         if not isinstance(value, u.Quantity):
             raise TypeError("dt_max must be a Quantity.")
         try:
             value = value.to(u.s)
         except u.UnitConversionError as exc:
-            raise u.UnitConversionError("Invalid units for dt_max.")
+            raise u.UnitConversionError("Invalid units for dt_max.") from exc
         if (
             hasattr(self, "_dt_input")
             and self.dt_input is not None
@@ -980,7 +980,7 @@ class NEI:
         return self._initial
 
     @initial.setter
-    def initial(self, initial_states: Optional[IonizationStates]):
+    def initial(self, initial_states: IonizationStates):
         if isinstance(initial_states, IonizationStates):
             self._initial = initial_states
             self._elements = (
@@ -1204,7 +1204,7 @@ class NEI:
 
         Parameters
         ----------
-        dt: ~astropy.units.Quantity, optional
+        dt: astropy.units.Quantity, optional
             The time step to be used for the next time advance.
 
         Notes
