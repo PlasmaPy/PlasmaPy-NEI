@@ -46,7 +46,7 @@ jobs:
 
 # On branches which aren't master, and not Pull Requests, build the wheels but only upload them on tags
 - ${{ if and(ne(variables['Build.Reason'], 'PullRequest'), not(contains(variables['Build.SourceBranch'], 'master'))) }}:
-  - template: publish.yml@OpenAstronomy
+  - template: publish.yml
     parameters:
       # Only Upload to PyPI on tags
       ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags/') }}:
