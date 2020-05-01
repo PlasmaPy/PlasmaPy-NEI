@@ -115,7 +115,7 @@ class EigenData:
 
         with h5py.File(filename, "r") as file:
             self._temperature_grid = file["te_gird"][:]  # TODO: fix typo in HDF5 file
-            self._ntemp = len(self.temperature_grid)
+            self._ntemp = self._temperature_grid.size
             c_ori = file["ioniz_rate"][:]
             r_ori = file["recomb_rate"][:]
 
@@ -304,9 +304,9 @@ class EigenData:
         Returns the eigenvalues for the ionization and recombination
         rates for the temperature specified in the class.
         """
-        if T_e_index:
+        if T_e_index is not None:
             return self._eigenvalues[T_e_index, :]
-        elif T_e:
+        elif T_e is not None:
             T_e_index = self._get_temperature_index(T_e)
             return self._eigenvalues[T_e_index, :]
         elif self.temperature:
