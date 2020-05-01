@@ -1,18 +1,18 @@
 """Contains classes to represent non-equilibrium ionization simulations."""
 
-__all__ = ["NEI"]
+__all__ = ["NEI", "NEIError"]
 
 
 import numpy as np
-import matplotlib.pyplot as plt
 from typing import Union, Optional, List, Dict, Callable
 import astropy.units as u
 import plasmapy as pl
 from scipy import interpolate, optimize
-from .eigenvaluetable import EigenData2
-from .ionization_states import IonizationStates
+from plasmapy_nei.eigen import EigenData
+from plasmapy.atomic import IonizationStates
 import warnings
-from nei.physics import *
+
+
 
 # TODO: Allow this to keep track of velocity and position too, and
 # eventually to have density and temperature be able to be functions of
@@ -21,6 +21,18 @@ from nei.physics import *
 
 # TODO: Expand Simulation docstring
 
+
+# TODO: Include the methods in the original Visualize class which is a
+#       subclass of NEI in the NEI-modeling/NEI repo. These were deleted
+#       temporarily to make it possible to get the NEI class itself
+#       adapted into this package.
+
+
+# TODO: In this file and test_nei.py, there are a few places with
+#       initial.ionic_fractions.keys(), where initial is an instance
+#       of IonizationStates.  This workaround exists because I forgot
+#       to put in an `elements` attribute in IonizationStates, and
+#       should be corrected.
 
 class NEIError(Exception):
     pass
@@ -32,7 +44,7 @@ class Simulation:
 
     Parameters
     ----------
-    initial: ~IonizationStates
+    initial: plasmapy.atomic.IonizationStates
         The `IonizationStates` instance representing the ionization
         states of different elements and plasma properties as the
         initial conditions.
@@ -51,37 +63,37 @@ class Simulation:
         The time at the start of the simulation.
 
     """
+
     def __init__(
-            self,
-            initial: IonizationStates,
-            n_init: u.Quantity,
-            T_e_init: u.Quantity,
-            max_steps: int,
-            time_start: u.Quantity,
+        self,
+        initial: IonizationStates,
+        n_init: u.Quantity,
+        T_e_init: u.Quantity,
+        max_steps: int,
+        time_start: u.Quantity,
     ):
 
-        self._elements = initial.elements
+        self._elements = list(initial.ionic_fractions.keys())
         self._abundances = initial.abundances
         self._max_steps = max_steps
 
-        self._nstates = {elem: pl.atomic.atomic_number(elem) + 1
-                         for elem in self.elements}
+        self._nstates = {
+            elem: pl.atomic.atomic_number(elem) + 1 for elem in self.elements
+        }
 
         self._ionic_fractions = {
-            elem: np.full((max_steps + 1, self.nstates[elem]), np.nan,
-                          dtype=np.float64)
+            elem: np.full((max_steps + 1, self.nstates[elem]), np.nan, dtype=np.float64)
             for elem in self.elements
         }
 
         self._number_densities = {
-            elem: np.full((max_steps + 1, self.nstates[elem]), np.nan,
-                          dtype=np.float64) * u.cm ** -3
+            elem: np.full((max_steps + 1, self.nstates[elem]), np.nan, dtype=np.float64)
+            * u.cm ** -3
             for elem in self.elements
         }
 
         self._n_elem = {
-            elem: np.full(max_steps + 1, np.nan) * u.cm ** -3
-            for elem in self.elements
+            elem: np.full(max_steps + 1, np.nan) * u.cm ** -3 for elem in self.elements
         }
 
         self._n_e = np.full(max_steps + 1, np.nan) * u.cm ** -3
@@ -93,20 +105,20 @@ class Simulation:
         self._assign(
             new_time=time_start,
             new_ionfracs=initial.ionic_fractions,
-            new_n = n_init,
-            new_T_e = T_e_init,
+            new_n=n_init,
+            new_T_e=T_e_init,
         )
 
     def _assign(
-            self,
-            new_time: u.Quantity,
-            new_ionfracs: Dict[str, np.ndarray],
-            new_n: u.Quantity,
-            new_T_e: u.Quantity,
+        self,
+        new_time: u.Quantity,
+        new_ionfracs: Dict[str, np.ndarray],
+        new_n: u.Quantity,
+        new_T_e: u.Quantity,
     ):
         """
         Store results from a time step of a non-equilibrium ionization
-        time advance in the `~nei.classes.NEI` class.
+        time advance in the `~plasmapy_nei.classes.NEI` class.
 
         Parameters
         ----------
@@ -145,15 +157,15 @@ class Simulation:
             # Calculate elemental and ionic number densities
             n_elem = {elem: new_n * self.abundances[elem] for elem in elements}
             number_densities = {
-                elem: n_elem[elem] * new_ionfracs[elem]
-                for elem in elements
+                elem: n_elem[elem] * new_ionfracs[elem] for elem in elements
             }
 
             # Calculate the electron number density
             n_e = 0.0 * u.cm ** -3
             for elem in elements:
                 integer_charges = np.linspace(
-                    0, self.nstates[elem]-1, self.nstates[elem])
+                    0, self.nstates[elem] - 1, self.nstates[elem]
+                )
                 n_e += np.sum(number_densities[elem] * integer_charges)
 
             # Assign densities
@@ -188,10 +200,10 @@ class Simulation:
         self._time = self._time[0:nsteps]
 
         for element in self.elements:
-            self._ionic_fractions[element] = \
-                self._ionic_fractions[element][0:nsteps, :]
-            self._number_densities[element] = \
-                self._number_densities[element][0:nsteps, :]
+            self._ionic_fractions[element] = self._ionic_fractions[element][0:nsteps, :]
+            self._number_densities[element] = self._number_densities[element][
+                0:nsteps, :
+            ]
 
         self._last_step = nsteps - 1
 
@@ -424,22 +436,22 @@ class NEI:
     """
 
     def __init__(
-            self,
-            inputs,
-            abundances: Union[Dict, str] = None,
-            T_e: Union[Callable, u.Quantity] = None,
-            n: Union[Callable, u.Quantity] = None,
-            time_input: u.Quantity = None,
-            time_start: u.Quantity = None,
-            time_max: u.Quantity = None,
-            max_steps: Union[int, np.integer] = 10000,
-            tol: Union[int, float] = 1e-15,
-            dt: u.Quantity = None,
-            dt_max: u.Quantity = np.inf * u.s,
-            dt_min: u.Quantity = 0 * u.s,
-            adapt_dt: bool = None,
-            safety_factor: Union[int, float] = 1,
-            verbose: bool = False,
+        self,
+        inputs,
+        abundances: Union[Dict, str] = None,
+        T_e: Union[Callable, u.Quantity] = None,
+        n: Union[Callable, u.Quantity] = None,
+        time_input: u.Quantity = None,
+        time_start: u.Quantity = None,
+        time_max: u.Quantity = None,
+        max_steps: Union[int, np.integer] = 10000,
+        tol: Union[int, float] = 1e-15,
+        dt: u.Quantity = None,
+        dt_max: u.Quantity = np.inf * u.s,
+        dt_min: u.Quantity = 0 * u.s,
+        adapt_dt: bool = None,
+        safety_factor: Union[int, float] = 1,
+        verbose: bool = False,
     ):
 
         try:
@@ -470,32 +482,38 @@ class NEI:
                 inputs=inputs,
                 abundances=abundances,
                 T_e=T_e_init,
-                n_H=n_init,  # TODO: Update n_H in IonizationState(s)
-                tol = tol,
+                n=n_init,
+                tol=tol,
             )
 
             self.tol = tol
-            self.elements = self.initial.elements
 
-            if 'H' not in self.elements:
+            # TODO: Update IonizationStates in PlasmaPy to have elements attribute
+
+            self.elements = list(self.initial.ionic_fractions.keys())
+
+            if "H" not in self.elements:
                 raise NEIError("Must have H in elements")
 
             self.abundances = self.initial.abundances
 
             self._EigenDataDict = {
-                element: EigenData2(element) for element in self.elements
+                element: EigenData(element) for element in self.elements
             }
 
             if self.T_e_input is not None and not isinstance(inputs, dict):
-                for element in self.initial.elements:
-                    self.initial.ionic_fractions[element] = \
-                        self.EigenDataDict[element].equilibrium_state(T_e_init.value)
+                for element in self.initial.ionic_fractions.keys():
+                    self.initial.ionic_fractions[element] = self.EigenDataDict[
+                        element
+                    ].equilibrium_state(T_e_init.value)
 
-            self._temperature_grid = \
-                self._EigenDataDict[self.elements[0]].temperature_grid
+            self._temperature_grid = self._EigenDataDict[
+                self.elements[0]
+            ].temperature_grid
 
-            self._get_temperature_index = \
-                self._EigenDataDict[self.elements[0]]._get_temperature_index
+            self._get_temperature_index = self._EigenDataDict[
+                self.elements[0]
+            ]._get_temperature_index
 
         except Exception:
             raise NEIError(
@@ -511,9 +529,7 @@ class NEI:
             )
 
     def equil_ionic_fractions(
-            self,
-            T_e: u.Quantity = None,
-            time: u.Quantity = None,
+        self, T_e: u.Quantity = None, time: u.Quantity = None,
     ) -> Dict[str, np.ndarray]:
         """
         Return the equilibrium ionic fractions for a temperature or at
@@ -556,7 +572,7 @@ class NEI:
             T_e = T_e.to(u.K) if T_e is not None else None
             time = time.to(u.s) if time is not None else None
         except Exception as exc:
-            raise NEIError("Invalid input to equilibrium_ionic_fractions.")
+            raise NEIError("Invalid input to equilibrium_ionic_fractions.") from exc
 
         if time is not None:
             T_e = self.electron_temperature(time)
@@ -566,8 +582,9 @@ class NEI:
 
         equil_ionfracs = {}
         for element in self.elements:
-            equil_ionfracs[element] = \
-                self.EigenDataDict[element].equilibrium_state(T_e.value)
+            equil_ionfracs[element] = self.EigenDataDict[element].equilibrium_state(
+                T_e.value
+            )
 
         return equil_ionfracs
 
@@ -628,8 +645,7 @@ class NEI:
             try:
                 times = times.to(u.s)
             except u.UnitConversionError:
-                raise u.UnitsError(
-                    "time_input must have units of seconds.") from None
+                raise u.UnitsError("time_input must have units of seconds.") from None
             if not np.all(times[1:] > times[:-1]):
                 raise ValueError("time_input must monotonically increase.")
             self._time_input = times
@@ -651,16 +667,15 @@ class NEI:
             try:
                 time = time.to(u.s)
             except u.UnitConversionError:
-                raise u.UnitsError(
-                    "time_start must have units of seconds") from None
-            if hasattr(self, '_time_max') \
-                    and self._time_max is not None \
-                    and self._time_max<=time:
+                raise u.UnitsError("time_start must have units of seconds") from None
+            if (
+                hasattr(self, "_time_max")
+                and self._time_max is not None
+                and self._time_max <= time
+            ):
                 raise ValueError("Need time_start < time_max.")
-            if self.time_input is not None and \
-                    self.time_input.min() > time:
-                raise ValueError(
-                    "time_start must be less than min(time_input)")
+            if self.time_input is not None and self.time_input.min() > time:
+                raise ValueError("time_start must be less than min(time_input)")
             self._time_start = time
         else:
             raise TypeError("Invalid time_start.") from None
@@ -673,18 +688,21 @@ class NEI:
     @time_max.setter
     def time_max(self, time: u.Quantity):
         if time is None:
-            self._time_max = self.time_input[-1] \
-                if self.time_input is not None else np.inf * u.s
+            self._time_max = (
+                self.time_input[-1] if self.time_input is not None else np.inf * u.s
+            )
         elif isinstance(time, u.Quantity):
             if not time.isscalar:
                 raise ValueError("time_max must be a scalar")
             try:
                 time = time.to(u.s)
             except u.UnitConversionError:
-                raise u.UnitsError(
-                    "time_max must have units of seconds") from None
-            if hasattr(self, '_time_start') and self._time_start is not None \
-                    and self._time_start >= time:
+                raise u.UnitsError("time_max must have units of seconds") from None
+            if (
+                hasattr(self, "_time_start")
+                and self._time_start is not None
+                and self._time_start >= time
+            ):
                 raise ValueError("time_max must be greater than time_start")
             self._time_max = time
         else:
@@ -737,12 +755,14 @@ class NEI:
             value = value.to(u.s)
         except u.UnitConversionError as exc:
             raise u.UnitConversionError("Invalid units for dt_min.")
-        if hasattr(self, '_dt_input') and self.dt_input is not None and self.dt_input < value:
-            raise ValueError(
-                "dt_min cannot exceed the inputted time step.")
-        if hasattr(self, '_dt_max') and self.dt_max < value:
-            raise ValueError(
-                "dt_min cannot exceed dt_max.")
+        if (
+            hasattr(self, "_dt_input")
+            and self.dt_input is not None
+            and self.dt_input < value
+        ):
+            raise ValueError("dt_min cannot exceed the inputted time step.")
+        if hasattr(self, "_dt_max") and self.dt_max < value:
+            raise ValueError("dt_min cannot exceed dt_max.")
         self._dt_min = value
 
     @property
@@ -757,12 +777,14 @@ class NEI:
             value = value.to(u.s)
         except u.UnitConversionError as exc:
             raise u.UnitConversionError("Invalid units for dt_max.")
-        if hasattr(self, '_dt_input') and self.dt_input is not None and self.dt_input > value:
-            raise ValueError(
-                "dt_max cannot be less the inputted time step.")
-        if hasattr(self, '_dt_min') and self.dt_min > value:
-            raise ValueError(
-                "dt_min cannot exceed dt_max.")
+        if (
+            hasattr(self, "_dt_input")
+            and self.dt_input is not None
+            and self.dt_input > value
+        ):
+            raise ValueError("dt_max cannot be less the inputted time step.")
+        if hasattr(self, "_dt_min") and self.dt_min > value:
+            raise ValueError("dt_min cannot exceed dt_max.")
         self._dt_max = value
 
     @property
@@ -828,8 +850,8 @@ class NEI:
             self._max_steps = n
         else:
             raise TypeError(
-                "max_steps must be an integer with 0 < max_steps <= "
-                "1000000")
+                "max_steps must be an integer with 0 < max_steps <= " "1000000"
+            )
 
     @property
     def T_e_input(self) -> Union[u.Quantity, Callable]:
@@ -851,8 +873,7 @@ class NEI:
                 self._electron_temperature = lambda time: T_e
             else:
                 if self._time_input is None:
-                    raise TypeError(
-                        "Must define time_input prior to T_e for an array.")
+                    raise TypeError("Must define time_input prior to T_e for an array.")
                 time_input = self.time_input
                 if len(time_input) != len(T_e):
                     raise ValueError("len(T_e) not equal to len(time_input).")
@@ -884,20 +905,21 @@ class NEI:
                 warnings.warn(
                     f"{time} is not in the simulation time interval:"
                     f"[{self.time_start}, {self.time_max}]. "
-                    f"May be extrapolating temperature.")
+                    f"May be extrapolating temperature."
+                )
             T_e = self._electron_temperature(time.to(u.s))
             if np.isnan(T_e) or np.isinf(T_e) or T_e < 0 * u.K:
                 raise NEIError(f"T_e = {T_e} at time = {time}.")
             return T_e
         except Exception as exc:
             raise NEIError(
-                f"Unable to calculate a valid electron temperature "
-                f"for time {time}") from exc
+                f"Unable to calculate a valid electron temperature " f"for time {time}"
+            ) from exc
 
     @property
     def n_input(self) -> u.Quantity:
         """The number density factor input."""
-        if 'H' in self.elements:
+        if "H" in self.elements:
             return self._n_input
         else:
             raise ValueError
@@ -914,8 +936,7 @@ class NEI:
                 self.hydrogen_number_density = lambda time: n
             else:
                 if self._time_input is None:
-                    raise TypeError(
-                        "Must define time_input prior to n for an array.")
+                    raise TypeError("Must define time_input prior to n for an array.")
                 time_input = self.time_input
                 if len(time_input) != len(n):
                     raise ValueError("len(n) is not equal to len(time_input).")
@@ -925,8 +946,7 @@ class NEI:
                     bounds_error=False,
                     fill_value="extrapolate",
                 )
-                self._hydrogen_number_density = \
-                    lambda time: f(time.value) * u.cm ** -3
+                self._hydrogen_number_density = lambda time: f(time.value) * u.cm ** -3
                 self._n_input = n
         elif callable(n):
             if self.time_start is not None:
@@ -950,7 +970,7 @@ class NEI:
         return self._hydrogen_number_density(time)
 
     @property
-    def EigenDataDict(self) -> Dict[str, EigenData2]:
+    def EigenDataDict(self) -> Dict[str, EigenData]:
         """
         Return a `dict` containing `~nei.class
         """
@@ -968,7 +988,7 @@ class NEI:
     def initial(self, initial_states: Optional[IonizationStates]):
         if isinstance(initial_states, IonizationStates):
             self._initial = initial_states
-            self._elements = initial_states.elements
+            self._elements = initial_states.ionic_fractions.keys()  # TODO IonizationStates
         elif initial_states is None:
             self._ionstates = None
         else:
@@ -1051,12 +1071,14 @@ class NEI:
         self._final = IonizationStates(
             inputs=final_ionfracs,
             abundances=self.abundances,
-            n_H=np.sum(self.results.number_densities['H'][-1, :]),  # modify this later?,
+            n=np.sum(
+                self.results.number_densities["H"][-1, :]
+            ),  # modify this later?,
             T_e=self.results.T_e[-1],
             tol=1e-6,
         )
 
-        if not np.isclose(self.time_max/u.s, self.results.time[-1]/u.s):
+        if not np.isclose(self.time_max / u.s, self.results.time[-1] / u.s):
             warnings.warn(
                 f"The simulation ended at {self.results.time[-1]}, "
                 f"which is prior to time_max = {self.time_max}."
@@ -1065,7 +1087,7 @@ class NEI:
     def _set_adaptive_timestep(self):
         """Adapt the time step."""
 
-        t = self._new_time if hasattr(self, '_new_time') else self.t_start
+        t = self._new_time if hasattr(self, "_new_time") else self.t_start
 
         # We need to guess the timestep in order to narrow down what the
         # timestep should be.  If we are in the middle of a simulation,
@@ -1073,9 +1095,13 @@ class NEI:
         # simulation, then we can either use the inputted timestep or
         # estimate it from other inputs.
 
-        dt_guess = self._dt if self._dt \
-            else self._dt_input if self._dt_input \
+        dt_guess = (
+            self._dt
+            if self._dt
+            else self._dt_input
+            if self._dt_input
             else self.time_max / self.max_steps
+        )
 
         # Make sure that dt_guess does not lead to a time that is out
         # of the domain.
@@ -1091,7 +1117,7 @@ class NEI:
         # Find the boundaries to the temperature bin.
 
         index = self._get_temperature_index(T.to(u.K).value)
-        T_nearby = np.array(self._temperature_grid[index-1:index+2]) * u.K
+        T_nearby = np.array(self._temperature_grid[index - 1 : index + 2]) * u.K
         T_boundary = (T_nearby[0:-1] + T_nearby[1:]) / 2
 
         # In order to use Brent's method, we must bound the root's
@@ -1099,7 +1125,10 @@ class NEI:
         # different times that are logarithmically spaced to find the
         # first one that is outside of the boundary.
 
-        dt_spread = np.geomspace(1e-9 * dt_guess.value, (self.time_max - t).value, num=100) * u.s
+        dt_spread = (
+            np.geomspace(1e-9 * dt_guess.value, (self.time_max - t).value, num=100)
+            * u.s
+        )
         time_spread = t + dt_spread
         T_spread = [self.electron_temperature(time) for time in time_spread]
         in_range = [T_boundary[0] <= temp <= T_boundary[1] for temp in T_spread]
@@ -1135,14 +1164,15 @@ class NEI:
         # and after the temperature leaves the temperature bin as bounds
         # for the root finding method.
 
-        dt_bounds = (dt_spread[first_false_index-1:first_false_index+1]).value
+        dt_bounds = (dt_spread[first_false_index - 1 : first_false_index + 1]).value
 
         # Define a function for the difference between the temperature
         # and the temperature boundary as a function of the value of the
         # time step.
 
-        T_val = lambda dtval: \
-            (self.electron_temperature(t + dtval*u.s) - T_boundary[boundary_index]).value
+        T_val = lambda dtval: (
+            self.electron_temperature(t + dtval * u.s) - T_boundary[boundary_index]
+        ).value
 
         # Next we find the root.  This method should succeed as long as
         # the root is bracketed by dt_bounds.  Because astropy.units is
@@ -1150,13 +1180,10 @@ class NEI:
         # then reattach them.
 
         try:
-            new_dt = optimize.brentq(
-                T_val,
-                *dt_bounds,
-                xtol=1e-14,
-                maxiter=1000,
-                disp=True,
-            ) * u.s
+            new_dt = (
+                optimize.brentq(T_val, *dt_bounds, xtol=1e-14, maxiter=1000, disp=True,)
+                * u.s
+            )
         except Exception as exc:
             raise NEIError(f"Unable to find new dt at t = {t}") from exc
         else:
@@ -1247,9 +1274,7 @@ class NEI:
         dt = self._dt.value
 
         if self.verbose:
-            print(
-                f"step={step}  T_e={T_e}  n_e={n_e}  dt={dt}"
-            )
+            print(f"step={step}  T_e={T_e}  n_e={n_e}  dt={dt}")
 
         new_ionic_fractions = {}
 
@@ -1286,7 +1311,7 @@ class NEI:
             raise NEIError(f"Unable to do time advance for {elem}") from exc
         else:
 
-            new_time = self.results.time[self.results._index-1] + self._dt
+            new_time = self.results.time[self.results._index - 1] + self._dt
             self.results._assign(
                 new_time=new_time,
                 new_ionfracs=new_ionic_fractions,
@@ -1303,24 +1328,6 @@ class NEI:
         implemented.
         """
         raise NotImplementedError
-
-    def visual(self, element):
-        """
-        Returns an atomic object used for plotting protocols
-
-        Parameter
-        ------
-        element: str,
-            The elemental symbol of the particle in question (i.e. 'H')
-
-        Returns
-        ------
-        Class object
-        """
-
-        plot_obj = Visualize(element, self.results)
-
-        return plot_obj
 
     def index_to_time(self, index):
         """
@@ -1358,213 +1365,3 @@ class NEI:
         index = (np.abs(self.results.time.value - time)).argmin()
 
         return index
-
-class Visualize(NEI):
-    """
-    Store plotting results from the simulation
-    """
-    def __init__(self, element, results):
-        self.element = element
-        self._results = results
-
-    def index_to_time(self, index):
-        """
-        Inherits the index_to_time method of the NEI class
-        """
-        return super(Visualize, self).index_to_time(index)
-
-
-    def ionicfrac_evol_plot(self,x_axis, ion='all'):
-        """
-        Creates a plot of the ionic fraction time evolution of element inputs
-
-        Paramaters
-        ------
-        element: string,
-                 The elemental symbal of the atom (i.e. 'H'),
-        ion: array-like, dtype=int
-             The repective integer charge of the atomic particle (i.e. 0 or [0,1])
-
-        x_axis: ~astropy.units.Quantity: array-like ,
-                The xaxis to plot the ionic fraction evolution over.
-                Can only be distance or time.
-
-        """
-        #Check if element input is a string
-        if not isinstance(self.element, str):
-            raise TypeError('The element input must be a string')
-
-
-        #Check to see if x_axis units are of time or length
-        if isinstance(x_axis, u.Quantity):
-            try:
-                x = x_axis.to(u.s)
-                xlabel = 'Time'
-            except Exception:
-                x = x_axis.to(u.R_sun)
-                xlabel = 'Distance'
-        else:
-            raise TypeError('Invalid x-axis units. Must be units of length or time.')
-
-
-        if ion == 'all':
-            charge_states = pl.atomic.atomic_number(self.element) + 1
-        else:
-            #Ensure ion input is array of integers
-            charge_states = np.array(ion, dtype=np.int16)
-
-        linsetyles = ['--','-.',':','-']
-
-        if ion =='all':
-            for nstate in range(charge_states):
-                ionic_frac = self.results.ionic_fractions[self.element][:,nstate]
-                plt.plot(x.value,ionic_frac, linestyle= linsetyles[nstate % len(linsetyles)], label=f'{self.element}+{nstate}')
-                plt.xlabel(f'{xlabel} ({x.unit})')
-                plt.ylabel('Ionic Fraction')
-                plt.title('Ionic Fraction Evolution of {}'.format(self.element))
-            plt.legend(loc='center left')
-        else:
-            if charge_states.size > 1:
-                for nstate in charge_states:
-                    ionic_frac = self.results.ionic_fractions[self.element][:,nstate]
-                    plt.plot(x.value,ionic_frac, linestyle= linsetyles[nstate % len(linsetyles)], label=f'{self.element}+{nstate}')
-                    plt.xlabel(f'{xlabel} ({x.unit})')
-                    plt.ylabel('Ionic Fraction')
-                    plt.title('Ionic Fraction Evolution of {}'.format(self.element))
-                plt.legend()
-                #plt.show()
-            else:
-                ionic_frac = self.results.ionic_fractions[self.element][:,charge_states]
-                plt.plot(x.value,ionic_frac)
-                plt.xlabel(f'{xlabel} ({x.unit})')
-                plt.ylabel('Ionic Fraction')
-                plt.title('Ionic Fraction Evolution of %s$^{%i+}$'%(self.element,ion))
-                #plt.show()
-
-    def ionicfrac_bar_plot(self, time_index):
-        """
-        Creates a bar plot of the ion fraction change at a particular time index
-
-        Parameters
-        ------
-        time_index: int,
-                    The particular time index at which to collect the various ion fractiom
-                    change
-        """
-
-        if not isinstance(self.element, str):
-            raise TypeError('The element input must be a string')
-
-        ion = pl.atomic.atomic_number(self.element)
-
-        charge_states = np.linspace(0, ion, ion+1, dtype=np.int16)
-
-        width=1.0
-
-        fig, ax = plt.subplots()
-        if isinstance(time_index, (list, np.ndarray)):
-
-            alpha = 1.0
-            colors = ['blue', 'red']
-
-            #Color index counter
-            color_idx = 1
-
-            for idx in time_index:
-
-                #Toggle between zero and one for colors array
-                color_idx ^= 1
-
-                ax.bar(charge_states, self.results.ionic_fractions[self.element][idx,:], alpha=alpha, \
-                        width=width, color=colors[color_idx],
-                        label='Time:{time:.{number}f}'.format(time=self.index_to_time(idx), number=1))
-                alpha -= 0.2
-            ax.set_xticks(charge_states-width/2.0)
-            ax.set_xticklabels(charge_states)
-            ax.set_title(f'{self.element}')
-
-            ax.set_xlabel('Charge State')
-            ax.set_ylabel('Ionic Fraction')
-
-            ax.legend(loc='best')
-            #plt.show()
-
-        else:
-            ax.bar(x, self.results.ionic_fractions[self.element][time_index,:], alpha=1.0, width=width)
-            ax.set_xticks(charge_states-width/2.0)
-            ax.set_xticklabels(charge_states)
-            ax.set_title(f'{self.element}')
-            ax.set_xlabel('Charge State')
-            ax.set_ylabel('Ionic Fraction')
-            #plt.show()
-
-    def rh_density_plot(self, gamma, mach, ion='None'):
-        """
-        Creates a plot of the Rankine-Huguniot jump relation for the
-        density of our element
-
-        Parameters
-        ------
-        gamma: float,
-               The specific heats ratio of the system
-        mach: float,
-              The mach number of the scenario
-        ion: int,
-             The ionic integer charge of the element in question
-        """
-
-        #Instantiate the MHD class
-        mhd = shocks.MHD()
-
-        nstates = pl.atomic.atomic_number(self.element) + 1
-
-        if ion == 'None':
-
-            for charge in range(nstates):
-
-                post_rho = mhd.rh_density(self.results.number_densities[self.element].value[0, charge], gamma, mach)
-
-                plt.semilogy(post_rho, label=f'{self.element}{charge}+')
-
-            plt.legend()
-            #plt.show()
-
-        else:
-
-            if not isinstance(ion, int):
-                raise TypeError('Please make sure that your charge value is an integer')
-            elif ion > nstates:
-                raise ValueError('The ionic charge input is greater than allowed for this element')
-
-
-            post_rho = mhd.rh_density(init_dens = self.results.number_densities[self.element].value[0, ion], gamma=gamma, mach=mach)
-
-            plt.semilogy(post_rho)
-            plt.title('Density Shock Transition')
-            plt.xlabel('Mach Number')
-            plt.ylabel('Number Density')
-            #plt.show()
-
-    def rh_temp_plot(self, gamma, mach):
-        """
-        Creates a plot of the Rankine-Huguniot jump relation for the
-        density of our element
-
-        Parameters
-        ------
-        gamma: float,
-               The specific heats ratio of the system
-        mach: float,
-              The mach number of the scenario
-        """
-
-        #Instantiate the MHD class
-        mhd = shocks.MHD()
-
-        post_temp = mhd.rh_temp(self.results.T_e.value[0], gamma, mach)
-
-        plt.semilogy(mach, post_temp)
-        plt.title('Temperature Shock Transition')
-        plt.xlabel('Mach Number')
-        plt.ylabel('Log Temperature (K)')
-        #plt.show()
