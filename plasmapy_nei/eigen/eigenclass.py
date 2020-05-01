@@ -115,7 +115,7 @@ class EigenData:
 
         with h5py.File(filename, "r") as file:
             self._temperature_grid = file["te_gird"][:]  # TODO: fix typo in HDF5 file
-            self._ntemp = len(self.temperature_grid)
+            self._ntemp = self._temperature_grid.size
             c_ori = file["ioniz_rate"][:]
             r_ori = file["recomb_rate"][:]
 
