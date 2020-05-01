@@ -1,7 +1,10 @@
 .. _nei:
 
-********************
-``plasmapy_nei.nei``
-********************
+****************
+``plasmapy.nei``
+****************
 
 .. py:currentmodule:: plasmapy_nei.nei
+
+.. automodapi:: plasmapy_nei.nei
+   :no-heading:

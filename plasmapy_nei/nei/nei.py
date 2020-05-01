@@ -45,21 +45,21 @@ class SimulationResults:
     Parameters
     ----------
     initial: plasmapy.atomic.IonizationStates
-        The `IonizationStates` instance representing the ionization
+        The ``IonizationStates`` instance representing the ionization
         states of different elements and plasma properties as the
         initial conditions.
 
-    n_init: ~astropy.units.quantity
+    n_init: astropy.units.quantity
         The initial number density scaling factor.
 
-    T_e_init: ~astropy.units.quantity
+    T_e_init: astropy.units.quantity
         The initial electron temperature.
 
     max_steps: int
         The maximum number of time steps that the simulation can take
         before stopping.
 
-    time_start: ~astropy.units.Quantity
+    time_start: astropy.units.Quantity
         The time at the start of the simulation.
 
     """
@@ -218,9 +218,7 @@ class SimulationResults:
 
     @property
     def last_step(self) -> int:
-        """
-        The time index of the last step.
-        """
+        """The time index of the last step."""
         return self._last_step
 
     @property
@@ -322,12 +320,12 @@ class NEI:
     ----------
     inputs
 
-    T_e: astropy.units.Quantity or `callable`
+    T_e: astropy.units.Quantity or callable
         The electron temperature, which may be a constant, an array of
         temperatures corresponding to the times in `time_input`, or a
         function that yields the temperature as a function of time.
 
-    n: astropy.units.Quantity or `callable`
+    n: astropy.units.Quantity or callable
         The number density multiplicative factor.  The number density of
         each element will be ``n`` times the abundance given in
         ``abundances``.  For example, if ``abundance['H'] = 1``, then this
@@ -966,7 +964,7 @@ class NEI:
     @property
     def EigenDataDict(self) -> Dict[str, EigenData]:
         """
-        Return a `dict` containing `~plasmapy.eigen.EigenData` instances
+        Return a `dict` containing `~plasmapy_nei.eigen.EigenData` instances
         for each element.
         """
         return self._EigenDataDict
