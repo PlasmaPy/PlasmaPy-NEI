@@ -1112,7 +1112,7 @@ class NEI:
         # Find the boundaries to the temperature bin.
 
         index = self._get_temperature_index(T.to(u.K).value)
-        T_nearby = np.array(self._temperature_grid[index - 1 : index + 2]) * u.K
+        T_nearby = np.array(self._temperature_grid[index - 1: index + 2]) * u.K
         T_boundary = (T_nearby[0:-1] + T_nearby[1:]) / 2
 
         # In order to use Brent's method, we must bound the root's
@@ -1159,7 +1159,7 @@ class NEI:
         # and after the temperature leaves the temperature bin as bounds
         # for the root finding method.
 
-        dt_bounds = (dt_spread[first_false_index - 1 : first_false_index + 1]).value
+        dt_bounds = (dt_spread[first_false_index - 1: first_false_index + 1]).value
 
         # Define a function for the difference between the temperature
         # and the temperature boundary as a function of the value of the
