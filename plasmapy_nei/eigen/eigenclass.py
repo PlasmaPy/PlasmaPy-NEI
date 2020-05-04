@@ -33,6 +33,9 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, natom):
     natom
         The atomic number.
     """
+
+    # TODO: refactor this function with
+
     nstates = natom + 1
     conce = np.zeros(nstates)
     f = np.zeros(nstates + 1)
@@ -47,7 +50,7 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, natom):
     f[1] = 1.0
     f[2] = c[1] * f[1] / r[2]
 
-    # simplest for hydrogen
+    # The solution for hydrogen may be found analytically.
     if natom == 1:
         f[1] = 1.0 / (1.0 + c[1] / r[2])
         f[2] = c[1] * f[1] / r[2]
@@ -70,7 +73,7 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, natom):
 
     f[natom + 1] = c[natom] * f[natom] / r[natom + 1]
 
-    conce[0:nstates] = f[1 : nstates + 1]
+    conce[0:nstates] = f[1: nstates + 1]
     return conce
 
 

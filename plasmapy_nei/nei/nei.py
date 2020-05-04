@@ -36,6 +36,7 @@ import warnings
 
 class NEIError(Exception):
     """For when there are errors in setting up or performing NEI simulations."""
+
     pass
 
 
