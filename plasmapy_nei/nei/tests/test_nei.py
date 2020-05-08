@@ -185,10 +185,7 @@ def test_electron_temperature(name_inputs_instance):
             assert instance.electron_temperature(instance.time_max) == T_e_input
         else:
             for time, T_e in zip(instance.time_input, T_e_input):
-                try:
-                    T_e_func = instance.electron_temperature(time)
-                except Exception:
-                    raise ValueError("Unable to find T_e from electron_temperature")
+                T_e_func = instance.electron_temperature(time)
 
                 assert np.isclose(T_e.value, T_e_func.value)
     if callable(T_e_input):
