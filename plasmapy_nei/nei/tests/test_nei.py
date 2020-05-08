@@ -177,7 +177,6 @@ def test_T_e_input(name_inputs_instance):
 
 def test_electron_temperature(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
-    instance = instance
     T_e_input = instance.T_e_input
     if isinstance(T_e_input, u.Quantity):
         if T_e_input.isscalar:
@@ -225,7 +224,6 @@ def test_simulate(name_inputs_instance):
 
 def test_simulation_end(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
-    instance = instance
     time = instance.results.time
     end_time = time[-1]
     max_steps = instance.max_steps
@@ -252,7 +250,6 @@ def test_equilibration(name_inputs_instance):
     """
     Test that equilibration works.
     """
-    instance = instance
     T_e = instance.T_e_input
     if not (isinstance(T_e, u.Quantity) and T_e.isscalar):
         pytest.skip("This test can only be used for cases where T_e is constant.")
