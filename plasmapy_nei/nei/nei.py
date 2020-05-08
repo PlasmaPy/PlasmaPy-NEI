@@ -509,6 +509,8 @@ class NEI:
             self._get_temperature_index = self._EigenDataDict[
                 self.elements[0]
             ]._get_temperature_index
+            
+            self._results = None
 
         except Exception:
             raise NEIError(
@@ -1000,9 +1002,9 @@ class NEI:
         corresponds to the simulation results.
 
         """
-        try:
+        if self._results is not None:
             return self._results
-        except Exception:
+        else:
             raise AttributeError("The simulation has not yet been performed.")
 
     @property
