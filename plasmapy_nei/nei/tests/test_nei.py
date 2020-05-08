@@ -1,7 +1,10 @@
 """Tests for non-equilibrium ionization modeling classes."""
 
 import astropy.units as u
-from plasmapy.atomic import IonizationStates, particle_symbol
+try:
+    from plasmapy.atomic import IonizationStates, particle_symbol
+except ImportError:
+    from plasmapy.particles import IonizationStates, particle_symbol
 from plasmapy_nei.nei import NEI
 from plasmapy_nei.eigen import EigenData
 import numpy as np

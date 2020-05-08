@@ -9,7 +9,10 @@ import astropy.units as u
 import plasmapy as pl
 from scipy import interpolate, optimize
 from plasmapy_nei.eigen import EigenData
-from plasmapy.atomic import IonizationStates
+try:
+    from plasmapy.atomic import IonizationStates, atomic_number
+except ImportError:
+    from plasmapy.particles import IonizationStates, atomic_number
 import warnings
 
 
@@ -79,7 +82,7 @@ class SimulationResults:
         self._max_steps = max_steps
 
         self._nstates = {
-            elem: pl.atomic.atomic_number(elem) + 1 for elem in self.elements
+            elem: atomic_number(elem) + 1 for elem in self.elements
         }
 
         self._ionic_fractions = {
