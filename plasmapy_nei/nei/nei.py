@@ -6,7 +6,6 @@ __all__ = ["NEI", "NEIError", "SimulationResults"]
 import numpy as np
 from typing import Union, Optional, List, Dict, Callable
 import astropy.units as u
-import plasmapy as pl
 from scipy import interpolate, optimize
 from plasmapy_nei.eigen import EigenData
 try:
