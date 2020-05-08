@@ -6,10 +6,12 @@ __all__ = ["NEI", "NEIError", "SimulationResults"]
 import numpy as np
 from typing import Union, Optional, List, Dict, Callable
 import astropy.units as u
-import plasmapy as pl
 from scipy import interpolate, optimize
 from plasmapy_nei.eigen import EigenData
-from plasmapy.atomic import IonizationStates
+try:
+    from plasmapy.atomic import IonizationStates, atomic_number
+except ImportError:
+    from plasmapy.particles import IonizationStates, atomic_number
 import warnings
 
 
@@ -79,7 +81,7 @@ class SimulationResults:
         self._max_steps = max_steps
 
         self._nstates = {
-            elem: pl.atomic.atomic_number(elem) + 1 for elem in self.elements
+            elem: atomic_number(elem) + 1 for elem in self.elements
         }
 
         self._ionic_fractions = {
@@ -506,8 +508,10 @@ class NEI:
             self._get_temperature_index = self._EigenDataDict[
                 self.elements[0]
             ]._get_temperature_index
+            
+            self._results = None
 
-        except Exception:
+        except Exception as e: 
             raise NEIError(
                 f"Unable to create NEI instance for:\n"
                 f"     inputs = {inputs}\n"
@@ -518,7 +522,7 @@ class NEI:
                 f" time_start = {time_start}\n"
                 f"   time_max = {time_max}\n"
                 f"  max_steps = {max_steps}\n"
-            )
+            ) from e
 
     def equil_ionic_fractions(
         self, T_e: u.Quantity = None, time: u.Quantity = None,
@@ -997,9 +1001,9 @@ class NEI:
         corresponds to the simulation results.
 
         """
-        try:
+        if self._results is not None:
             return self._results
-        except Exception:
+        else:
             raise AttributeError("The simulation has not yet been performed.")
 
     @property
