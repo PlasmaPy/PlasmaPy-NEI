@@ -512,7 +512,7 @@ class NEI:
             
             self._results = None
 
-        except Exception:
+        except Exception as e: 
             raise NEIError(
                 f"Unable to create NEI instance for:\n"
                 f"     inputs = {inputs}\n"
@@ -523,7 +523,7 @@ class NEI:
                 f" time_start = {time_start}\n"
                 f"   time_max = {time_max}\n"
                 f"  max_steps = {max_steps}\n"
-            )
+            ) from e
 
     def equil_ionic_fractions(
         self, T_e: u.Quantity = None, time: u.Quantity = None,
