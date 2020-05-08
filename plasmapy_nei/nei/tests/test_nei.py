@@ -167,19 +167,13 @@ def test_n_input(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
     actual = instance.n_input
     expected = inputs["n"]
-    if isinstance(expected, u.Quantity) and not expected.isscalar:
-        assert all(expected == actual)
-    else:
-        assert expected == actual
+    assert np.all(expected == actual)
 
 def test_T_e_input(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
     actual = instance.T_e_input
     expected = inputs["T_e"]
-    if isinstance(expected, u.Quantity) and not expected.isscalar:
-        assert all(expected == actual)
-    else:
-        assert expected == actual
+    assert np.all(expected == actual)
 
 def test_electron_temperature(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
