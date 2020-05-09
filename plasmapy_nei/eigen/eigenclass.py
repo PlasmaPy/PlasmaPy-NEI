@@ -44,31 +44,17 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, natom):
         c[i + 1] = ioniz_rate[i]
         r[i + 1] = recomb_rate[i]
 
+    # f[0] = 0.0 from initialization
     f[1] = 1.0
-    f[2] = c[1] * f[1] / r[2]
-
-    # simplest for hydrogen
-    if natom == 1:
-        f[1] = 1.0 / (1.0 + c[1] / r[2])
-        f[2] = c[1] * f[1] / r[2]
-        conce[0:2] = f[1:3]
-        return conce
-
-    # for other elements
-
-    for k in range(2, natom):
-        f[k + 1] = (-c[k - 1] * f[k - 1] + (c[k] + r[k]) * f[k]) / r[k + 1]
+    for k in range(2, natom+1):
+        # note: this loop does NOT run for the hydrogen case, thus it does note defined f[2]
+        f[k] = (-c[k - 2] / r[k]) * f[k - 2] \
+               + ((c[k-1] + r[k-1]) / r[k]) * f[k-1])
 
     f[natom + 1] = c[natom] * f[natom] / r[natom + 1]
-
-    f[1] = 1.0 / np.sum(f)
-
-    f[2] = c[1] * f[1] / r[2]
-
-    for k in range(2, natom):
-        f[k + 1] = (-c[k - 1] * f[k - 1] + (c[k] + r[k]) * f[k]) / r[k + 1]
-
-    f[natom + 1] = c[natom] * f[natom] / r[natom + 1]
+    
+    # normalize the distribution
+    f = f / np.sum(f)
 
     conce[0:nstates] = f[1 : nstates + 1]
     return conce
