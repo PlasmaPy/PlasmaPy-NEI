@@ -395,7 +395,7 @@ class NEI:
 
     >>> inputs = {'H': [0.9, 0.1], 'He': [0.9, 0.099, 0.001]}
     >>> abund = {'H': 1, 'He': 0.085}
-    >>> n = np.array([1e9, 1e8]) * u.cm ** -3
+    >>> n = u.Quantity([1e9, 1e8], u.cm**-3)
     >>> T_e = np.array([10000, 40000]) * u.K
     >>> time = np.array([0, 300]) * u.s
     >>> dt = 0.25 * u.s
