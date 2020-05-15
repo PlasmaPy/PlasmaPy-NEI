@@ -1,7 +1,7 @@
 # PlasmaPy-NEI
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
-[![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy:openastronomy.org)
+[![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy-nei:openastronomy.org)
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 
 [![Build Status](https://dev.azure.com/plasmapy/PlasmaPy-NEI/_apis/build/status/PlasmaPy.PlasmaPy-NEI?branchName=master)](https://dev.azure.com/plasmapy/PlasmaPy-NEI/_build/latest?definitionId=2&branchName=master)
