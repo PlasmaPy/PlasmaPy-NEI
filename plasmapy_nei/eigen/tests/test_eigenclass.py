@@ -1,6 +1,10 @@
 """Tests of the class to store package data."""
 
-from plasmapy import atomic
+try:
+    from plasmapy import atomic
+except ImportError:
+    from plasmapy import particles as atomic
+
 from plasmapy_nei.eigen import EigenData
 import pytest
 import numpy as np

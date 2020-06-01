@@ -8,10 +8,12 @@ from typing import Union, Optional, List, Dict, Callable
 import astropy.units as u
 from scipy import interpolate, optimize
 from plasmapy_nei.eigen import EigenData
+
 try:
     from plasmapy.atomic import IonizationStates, atomic_number
 except ImportError:
     from plasmapy.particles import IonizationStates, atomic_number
+
 import warnings
 
 
