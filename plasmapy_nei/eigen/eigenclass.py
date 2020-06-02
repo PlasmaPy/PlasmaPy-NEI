@@ -228,8 +228,11 @@ class EigenData:
     @particle_input
     def __init__(self, element: Particle):
 
-        self._validate_element(element)
-        self._load_data()
+        try:
+            self._validate_element(element)
+            self._load_data()
+        except Exception as exc:
+            raise RuntimeError(f"Unable to create EigenData object for {element}") from exc
 
     def _get_temperature_index(self, T_e):  # TODO: extract this to a function
         """Return the temperature index closest to a particular temperature."""
