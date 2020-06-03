@@ -848,7 +848,7 @@ class NEI:
             self._max_steps = n
         else:
             raise TypeError(
-                "max_steps must be an integer with 0 < max_steps <= " "1000000"
+                "max_steps must be an integer with 0 < max_steps <= 1000000"
             )
 
     @property
