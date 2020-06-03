@@ -83,9 +83,7 @@ class SimulationResults:
         self._abundances = initial.abundances
         self._max_steps = max_steps
 
-        self._nstates = {
-            elem: atomic_number(elem) + 1 for elem in self.elements
-        }
+        self._nstates = {elem: atomic_number(elem) + 1 for elem in self.elements}
 
         self._ionic_fractions = {
             elem: np.full((max_steps + 1, self.nstates[elem]), np.nan, dtype=np.float64)
@@ -511,12 +509,12 @@ class NEI:
             self._get_temperature_index = self._EigenDataDict[
                 self.elements[0]
             ]._get_temperature_index
-            
+
             self._results = None
 
-        except Exception as e: 
+        except Exception as e:
             raise NEIError(
-                f"Unable to create NEI instance for:\n"
+                f"Unable to create NEI object for:\n"
                 f"     inputs = {inputs}\n"
                 f" abundances = {abundances}\n"
                 f"        T_e = {T_e}\n"
@@ -754,7 +752,7 @@ class NEI:
         try:
             value = value.to(u.s)
         except u.UnitConversionError as exc:
-            raise u.UnitConversionError("Invalid units for dt_min.")
+            raise u.UnitConversionError("Invalid units for dt_min.") from exc
         if (
             hasattr(self, "_dt_input")
             and self.dt_input is not None
@@ -1118,7 +1116,7 @@ class NEI:
         # Find the boundaries to the temperature bin.
 
         index = self._get_temperature_index(T.to(u.K).value)
-        T_nearby = np.array(self._temperature_grid[index - 1: index + 2]) * u.K
+        T_nearby = np.array(self._temperature_grid[index - 1 : index + 2]) * u.K
         T_boundary = (T_nearby[0:-1] + T_nearby[1:]) / 2
 
         # In order to use Brent's method, we must bound the root's
@@ -1165,7 +1163,7 @@ class NEI:
         # and after the temperature leaves the temperature bin as bounds
         # for the root finding method.
 
-        dt_bounds = (dt_spread[first_false_index - 1: first_false_index + 1]).value
+        dt_bounds = (dt_spread[first_false_index - 1 : first_false_index + 1]).value
 
         # Define a function for the difference between the temperature
         # and the temperature boundary as a function of the value of the

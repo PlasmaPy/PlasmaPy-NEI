@@ -1,6 +1,7 @@
 """Tests for non-equilibrium ionization modeling classes."""
 
 import astropy.units as u
+
 try:
     from plasmapy.atomic import IonizationStates, particle_symbol
 except ImportError:
@@ -18,128 +19,164 @@ T_e_array = np.array([4e4, 6e4]) * u.K
 n_array = np.array([1e9, 5e8]) * u.cm ** -3
 
 
-@pytest.fixture(scope="module", params =
-                         [
-    ("basic", {
-        "inputs": inputs_dict,
-        "abundances": abundances,
-        "T_e": T_e_array,
-        "n": n_array,
-        "time_input": time_array,
-        "time_start": 0 * u.s,
-        "time_max": 800 * u.s,
-        "max_steps": 1,
-        "dt": 800 * u.s,
-        "adapt_dt": False,
-        "verbose": True,
-    }),
-    ("T_e constant", {
-        "inputs": inputs_dict,
-        "abundances": abundances,
-        "T_e": 1 * u.MK,
-        "n": n_array,
-        "time_input": time_array,
-        "time_start": 0 * u.s,
-        "time_max": 800 * u.s,
-        "dt": 100 * u.s,
-        "max_steps": 2,
-        "adapt_dt": False,
-        "verbose": True,
-    }),
-    ("n_e constant", {
-        "inputs": inputs_dict,
-        "abundances": abundances,
-        "T_e": T_e_array,
-        "n": 1e9 * u.cm ** -3,
-        "time_input": time_array,
-        "time_start": 0 * u.s,
-        "time_max": 800 * u.s,
-        "max_steps": 2,
-        "adapt_dt": False,
-        "dt": 100 * u.s,
-        "verbose": True,
-    }),
-    ("T_e function", {
-        "inputs": inputs_dict,
-        "abundances": abundances,
-        "T_e": lambda time: 1e4 * (1 + time / u.s) * u.K,
-        "n": 1e15 * u.cm ** -3,
-        "time_max": 800 * u.s,
-        "max_steps": 2,
-        "dt": 100 * u.s,
-        "adapt_dt": False,
-        "verbose": True,
-    }),
-    ("n function", {
-        "inputs": inputs_dict,
-        "abundances": abundances,
-        "T_e": 6e4 * u.K,
-        "n": lambda time: 1e9 * (1 + time / u.s) * u.cm ** -3,
-        "time_start": 0 * u.s,
-        "time_max": 800 * u.s,
-        "adapt_dt": False,
-        "dt": 200 * u.s,
-        "verbose": True,
-        "max_steps": 4,
-    }),
-    ("equil test cool", {
-        "inputs": ["H", "He", "N"],
-        "abundances": {"H": 1, "He": 0.1, "C": 1e-4, "N": 1e-4, "O": 1e-4, "Fe": 1e-4},
-        "T_e": 10001.0 * u.K,
-        "n": 1e13 * u.cm ** -3,
-        "time_max": 2e6 * u.s,
-        "tol": 1e-9,
-        "adapt_dt": False,
-        "dt": 5e5 * u.s,
-        "max_steps": 4,
-        "verbose": True,
-    }),
-    ("equil test hot", {
-        "inputs": ["H", "He", "C"],
-        "abundances": {
-            "H": 1,
-            "He": 0.1,
-            "C": 1e-4,
-            "N": 1e-4,
-            "O": 1e-4,
-            "Fe": 1e-4,
-            "S": 2e-6,
-        },
-        "T_e": 7e6 * u.K,
-        "n": 1e9 * u.cm ** -3,
-        "time_max": 1e8 * u.s,
-        "dt": 5e7 * u.s,
-        "max_steps": 3,
-        "adapt_dt": False,
-        "verbose": True,
-    }),
-    ("equil test start far out of equil", {
-        "inputs": {
-            "H": [0.99, 0.01],
-            "He": [0.5, 0.0, 0.5],
-            "O": [0.2, 0, 0.2, 0, 0.2, 0, 0.2, 0, 0.2],
-        },
-        "abundances": {"H": 1, "He": 0.1, "O": 1e-4},
-        "T_e": 3e6 * u.K,
-        "n": 1e9 * u.cm ** -3,
-        "dt": 1e6 * u.s,
-        "time_start": 0 * u.s,
-        "time_max": 1e6 * u.s,
-        "adapt_dt": False,
-        "verbose": True,
-        "max_steps": 2,
-    }),
-    ("adapt dt", {
-        "inputs": ["H", "He"],
-        "abundances": {"H": 1, "He": 0.1},
-        "T_e": lambda t: u.K * (1e6 + 1.3e4 * np.sin(t.value)),
-        "n": 1e10 * u.cm ** -3,
-        "max_steps": 300,
-        "time_start": 0 * u.s,
-        "time_max": 2 * np.pi * u.s,
-        "adapt_dt": True,
-    }),
-])
+@pytest.fixture(
+    scope="module",
+    params=[
+        (
+            "basic",
+            {
+                "inputs": inputs_dict,
+                "abundances": abundances,
+                "T_e": T_e_array,
+                "n": n_array,
+                "time_input": time_array,
+                "time_start": 0 * u.s,
+                "time_max": 800 * u.s,
+                "max_steps": 1,
+                "dt": 800 * u.s,
+                "adapt_dt": False,
+                "verbose": True,
+            },
+        ),
+        (
+            "T_e constant",
+            {
+                "inputs": inputs_dict,
+                "abundances": abundances,
+                "T_e": 1 * u.MK,
+                "n": n_array,
+                "time_input": time_array,
+                "time_start": 0 * u.s,
+                "time_max": 800 * u.s,
+                "dt": 100 * u.s,
+                "max_steps": 2,
+                "adapt_dt": False,
+                "verbose": True,
+            },
+        ),
+        (
+            "n_e constant",
+            {
+                "inputs": inputs_dict,
+                "abundances": abundances,
+                "T_e": T_e_array,
+                "n": 1e9 * u.cm ** -3,
+                "time_input": time_array,
+                "time_start": 0 * u.s,
+                "time_max": 800 * u.s,
+                "max_steps": 2,
+                "adapt_dt": False,
+                "dt": 100 * u.s,
+                "verbose": True,
+            },
+        ),
+        (
+            "T_e function",
+            {
+                "inputs": inputs_dict,
+                "abundances": abundances,
+                "T_e": lambda time: 1e4 * (1 + time / u.s) * u.K,
+                "n": 1e15 * u.cm ** -3,
+                "time_max": 800 * u.s,
+                "max_steps": 2,
+                "dt": 100 * u.s,
+                "adapt_dt": False,
+                "verbose": True,
+            },
+        ),
+        (
+            "n function",
+            {
+                "inputs": inputs_dict,
+                "abundances": abundances,
+                "T_e": 6e4 * u.K,
+                "n": lambda time: 1e9 * (1 + time / u.s) * u.cm ** -3,
+                "time_start": 0 * u.s,
+                "time_max": 800 * u.s,
+                "adapt_dt": False,
+                "dt": 200 * u.s,
+                "verbose": True,
+                "max_steps": 4,
+            },
+        ),
+        (
+            "equil test cool",
+            {
+                "inputs": ["H", "He", "N"],
+                "abundances": {
+                    "H": 1,
+                    "He": 0.1,
+                    "C": 1e-4,
+                    "N": 1e-4,
+                    "O": 1e-4,
+                    "Fe": 1e-4,
+                },
+                "T_e": 10001.0 * u.K,
+                "n": 1e13 * u.cm ** -3,
+                "time_max": 2e6 * u.s,
+                "tol": 1e-9,
+                "adapt_dt": False,
+                "dt": 5e5 * u.s,
+                "max_steps": 4,
+                "verbose": True,
+            },
+        ),
+        (
+            "equil test hot",
+            {
+                "inputs": ["H", "He", "C"],
+                "abundances": {
+                    "H": 1,
+                    "He": 0.1,
+                    "C": 1e-4,
+                    "N": 1e-4,
+                    "O": 1e-4,
+                    "Fe": 1e-4,
+                    "S": 2e-6,
+                },
+                "T_e": 7e6 * u.K,
+                "n": 1e9 * u.cm ** -3,
+                "time_max": 1e8 * u.s,
+                "dt": 5e7 * u.s,
+                "max_steps": 3,
+                "adapt_dt": False,
+                "verbose": True,
+            },
+        ),
+        (
+            "equil test start far out of equil",
+            {
+                "inputs": {
+                    "H": [0.99, 0.01],
+                    "He": [0.5, 0.0, 0.5],
+                    "O": [0.2, 0, 0.2, 0, 0.2, 0, 0.2, 0, 0.2],
+                },
+                "abundances": {"H": 1, "He": 0.1, "O": 1e-4},
+                "T_e": 3e6 * u.K,
+                "n": 1e9 * u.cm ** -3,
+                "dt": 1e6 * u.s,
+                "time_start": 0 * u.s,
+                "time_max": 1e6 * u.s,
+                "adapt_dt": False,
+                "verbose": True,
+                "max_steps": 2,
+            },
+        ),
+        (
+            "adapt dt",
+            {
+                "inputs": ["H", "He"],
+                "abundances": {"H": 1, "He": 0.1},
+                "T_e": lambda t: u.K * (1e6 + 1.3e4 * np.sin(t.value)),
+                "n": 1e10 * u.cm ** -3,
+                "max_steps": 300,
+                "time_start": 0 * u.s,
+                "time_max": 2 * np.pi * u.s,
+                "adapt_dt": True,
+            },
+        ),
+    ],
+)
 def name_inputs_instance(request):
     test_name, dictionary = request.param
     return test_name, dictionary, NEI(**dictionary)
@@ -154,14 +191,17 @@ def test_time_start(name_inputs_instance):
     else:
         assert instance.time_start == 0 * u.s
 
+
 def test_time_max(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
     if "time_max" in inputs.keys():
         assert inputs["time_max"] == instance.time_max
 
+
 def test_initial_type(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
     assert isinstance(instance.initial, IonizationStates)
+
 
 def test_n_input(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
@@ -169,11 +209,13 @@ def test_n_input(name_inputs_instance):
     expected = inputs["n"]
     assert np.all(expected == actual)
 
+
 def test_T_e_input(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
     actual = instance.T_e_input
     expected = inputs["T_e"]
     assert np.all(expected == actual)
+
 
 def test_electron_temperature(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
@@ -188,26 +230,25 @@ def test_electron_temperature(name_inputs_instance):
 
                 assert np.isclose(T_e.value, T_e_func.value)
     if callable(T_e_input):
-        assert instance.T_e_input(
+        assert instance.T_e_input(instance.time_start) == instance.electron_temperature(
             instance.time_start
-        ) == instance.electron_temperature(instance.time_start)
+        )
+
 
 def test_initial_ionfracs(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
     if not isinstance(inputs["inputs"], dict):
         pytest.skip("Test irrelevant")
 
-        
     original_inputs = inputs["inputs"]
     original_elements = original_inputs.keys()
 
     for element in original_elements:
         assert np.allclose(
             original_inputs[element],
-            instance.initial.ionic_fractions[
-                particle_symbol(element)
-            ],
+            instance.initial.ionic_fractions[particle_symbol(element)],
         )
+
 
 def test_simulate(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
@@ -221,6 +262,7 @@ def test_simulate(name_inputs_instance):
         assert np.allclose(
             results.ionic_fractions[elem][-1, :], final.ionic_fractions[elem]
         )
+
 
 def test_simulation_end(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
@@ -243,6 +285,7 @@ def test_simulation_end(name_inputs_instance):
         print(f"time_max = {instance.time_max}")
         raise Exception("Problem with end time.")
 
+
 def test_equilibration(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
     if "equil" in test_name:
@@ -258,6 +301,7 @@ def test_equilibration(name_inputs_instance):
         assert np.allclose(
             equil_dict[element], instance.results.ionic_fractions[element][-1, :]
         )
+
 
 def test_initial_results(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
