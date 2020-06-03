@@ -362,9 +362,9 @@ class EigenData:
 
         # TODO: add discussion of what the indices of the returned array represent
 
-        if T_e_index:
+        if T_e_index is not None:
             return self._eigenvectors[T_e_index, :, :]
-        elif T_e:
+        elif T_e is not None:
             T_e_index = self._get_temperature_index(T_e)
             return self._eigenvectors[T_e_index, :, :]
         elif self.temperature:
@@ -386,9 +386,9 @@ class EigenData:
             The index of the electron temperature array corresponding to
             the desired temperature.
         """
-        if T_e_index:
+        if T_e_index is not None:
             return self._eigenvector_inverses[T_e_index, :, :]
-        elif T_e:
+        elif T_e is not None:
             T_e_index = self._get_temperature_index(T_e)
             return self._eigenvector_inverses[T_e_index, :, :]
         elif self.temperature:
@@ -410,9 +410,9 @@ class EigenData:
             The index of the electron temperature array corresponding to
             the desired temperature.
         """
-        if T_e_index:
+        if T_e_index is not None:
             return self._equilibrium_states[T_e_index, :]
-        elif T_e:
+        elif T_e is not None:
             T_e_index = self._get_temperature_index(T_e)
             return self._equilibrium_states[T_e_index, :]
         elif self.temperature:
