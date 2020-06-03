@@ -10,6 +10,7 @@ import numpy as np
 from numpy import linalg as LA
 import pkg_resources
 import warnings
+import astropy.units as u
 
 try:
     from plasmapy.particles import Particle, particle_input
@@ -127,13 +128,20 @@ class EigenData:
             "data/ionrecomb_rate.h5",  # from Chianti database, version 8.07
         )
 
-        # TODO: enable different HDF5 files
-
-        with h5py.File(filename, "r") as file:
+        try:
+            file = h5py.File(filename, "r")
+        except OSError as oserror:
+            raise IOError(
+                f"Unable to import {filename} using h5py.  This error could "
+                f"happen, for example, if the repository was cloned without "
+                f"having git-lfs installed."
+            ) from oserror
+        else:
             self._temperature_grid = file["te_gird"][:]  # TODO: fix typo in HDF5 file
             self._ntemp = self._temperature_grid.size
             c_ori = file["ioniz_rate"][:]
             r_ori = file["recomb_rate"][:]
+            file.close()
 
         c_rate = np.zeros((self.ntemp, self.nstates))
         r_rate = np.zeros((self.ntemp, self.nstates))
