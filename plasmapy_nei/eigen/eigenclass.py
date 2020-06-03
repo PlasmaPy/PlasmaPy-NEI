@@ -27,14 +27,22 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, natom):
     Parameters
     ----------
     ioniz_rate
+        An array containing the ionization rates.
 
     recomb_rate
+        An array containing the recombination rates.
 
     natom
         The atomic number.
     """
 
-    # TODO: refactor this function with
+    # TODO: specify what each index in the array means
+
+    # TODO: possibly refactor to include data in form of xarray?
+
+    # TODO: add notes to docs on the mathematics behind this calculation
+
+    # TODO: use more descriptive variable names throughout function
 
     nstates = natom + 1
     conce = np.zeros(nstates)
@@ -74,11 +82,11 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, natom):
         f[k + 1] = (-c[k - 1] * f[k - 1] + (c[k] + r[k]) * f[k]) / r[k + 1]
 
     f[natom + 1] = c[natom] * f[natom] / r[natom + 1]
-    
+
     # normalize the distribution
     f = f / np.sum(f)
 
-    conce[0:nstates] = f[1: nstates + 1]
+    conce[0:nstates] = f[1 : nstates + 1]
     return conce
 
 
@@ -232,7 +240,9 @@ class EigenData:
             self._validate_element(element)
             self._load_data()
         except Exception as exc:
-            raise RuntimeError(f"Unable to create EigenData object for {element}") from exc
+            raise RuntimeError(
+                f"Unable to create EigenData object for {element}"
+            ) from exc
 
     def _get_temperature_index(self, T_e):  # TODO: extract this to a function
         """Return the temperature index closest to a particular temperature."""
@@ -304,10 +314,12 @@ class EigenData:
 
     @property
     def ionization_rate(self):
+        # TODO: add docstring & description
         return self._ionization_rate
 
     @property
     def recombination_rate(self):
+        # TODO: add docstring & description
         return self._recombination_rate
 
     def eigenvalues(self, T_e=None, T_e_index=None):
@@ -325,11 +337,23 @@ class EigenData:
         else:
             raise AttributeError("The temperature has not been set.")
 
-    def eigenvectors(self, T_e=None, T_e_index=None):
+    def eigenvectors(self, T_e: u.K = None, T_e_index: u.K = None):
         """
         Returns the eigenvectors for the ionization and recombination
         rates for the temperature specified in the class.
+
+        Parameters
+        ----------
+        T_e : ~astropy.units.Quantity
+            The electron temperature
+
+        T_e_index : integer
+            The index of the electron temperature array corresponding to
+            the desired temperature.
         """
+
+        # TODO: add discussion of what the indices of the returned array represent
+
         if T_e_index:
             return self._eigenvectors[T_e_index, :, :]
         elif T_e:
@@ -344,6 +368,15 @@ class EigenData:
         """
         Returns the inverses of the eigenvectors for the ionization and
         recombination rates for the temperature specified in the class.
+
+        Parameters
+        ----------
+        T_e : ~astropy.units.Quantity
+            The electron temperature
+
+        T_e_index : integer
+            The index of the electron temperature array corresponding to
+            the desired temperature.
         """
         if T_e_index:
             return self._eigenvector_inverses[T_e_index, :, :]
@@ -359,6 +392,15 @@ class EigenData:
         """
         Return the equilibrium charge state distribution for the
         temperature specified in the class.
+
+        Parameters
+        ----------
+        T_e : ~astropy.units.Quantity
+            The electron temperature
+
+        T_e_index : integer
+            The index of the electron temperature array corresponding to
+            the desired temperature.
         """
         if T_e_index:
             return self._equilibrium_states[T_e_index, :]
