@@ -28,6 +28,9 @@ The early versions of this package will account for collisional ionization, radi
    :maxdepth: 2
    :caption: Contents:
 
+   ``plasmapy_nei.eigen`` <eigen/index>
+   ``plasmapy_nei.nei`` <nei/index>
+
 Indices and tables
 ==================
 
