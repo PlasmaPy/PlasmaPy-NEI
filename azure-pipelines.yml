@@ -41,7 +41,7 @@ jobs:
       - linux: py37
         name: py37_linux
 
-      - linux: py37
+      - linux: py37-plasmapydev
         name: py37_linux_plasmapydev
 
       - linux: py38
