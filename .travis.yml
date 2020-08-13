@@ -26,15 +26,10 @@ matrix:
           python: "3.7"
           stage: Generic tests
 
-        - name: "3.7-numpydev"
-          env: TOX_ENV='py37-numpydev'
+        - name: "3.7-plasmapydev"
+          env: TOX_ENV='py37-plasmapydev'
           python: "3.7"
-          stage: Cron tests
-
-        - name: "3.7-astropydev"
-          env: TOX_ENV='py37-astropydev'
-          python: "3.7"
-          stage: Cron tests
+          stage: Generic tests
 
 before_install:
         - git clone git://github.com/astropy/ci-helpers.git --depth 1
