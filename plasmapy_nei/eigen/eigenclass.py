@@ -3,7 +3,7 @@ Contains the class to provide access to eigenvalue data for the
 ionization and recombination rates.
 """
 
-__all__ = ["EigenData"]
+__all__ = ["EigenData", "eigen_data_dict"]
 
 import h5py
 import numpy as np
@@ -419,3 +419,16 @@ class EigenData:
             return self._equilibrium_states[self._te_index, :]
         else:
             raise AttributeError("The temperature has not been set.")
+
+
+
+_elements = [Particle(i).element for i in range(1, 31)]
+
+eigen_data_dict = {element: EigenData(element) for element in _elements}
+"""
+A `dict` containing eigendata for ionization and recombination rates.
+The keys are atomic symbols and the values are `EigenData` instances
+for each element.
+"""
+
+del _elements
