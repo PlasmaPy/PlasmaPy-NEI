@@ -7,7 +7,7 @@ import numpy as np
 from typing import Union, Optional, List, Dict, Callable
 import astropy.units as u
 from scipy import interpolate, optimize
-from plasmapy_nei.eigen import EigenData
+from plasmapy_nei.eigen import EigenData, eigen_data_dict
 
 try:
     from plasmapy.atomic import IonizationStates, atomic_number
@@ -492,21 +492,19 @@ class NEI:
 
             self.abundances = self.initial.abundances
 
-            self._EigenDataDict = {
-                element: EigenData(element) for element in self.elements
-            }
+            self._eigen_data_dict = eigen_data_dict
 
             if self.T_e_input is not None and not isinstance(inputs, dict):
                 for element in self.initial.ionic_fractions.keys():
-                    self.initial.ionic_fractions[element] = self.EigenDataDict[
+                    self.initial.ionic_fractions[element] = self.eigen_data_dict[
                         element
                     ].equilibrium_state(T_e_init.value)
 
-            self._temperature_grid = self._EigenDataDict[
+            self._temperature_grid = self._eigen_data_dict[
                 self.elements[0]
             ].temperature_grid
 
-            self._get_temperature_index = self._EigenDataDict[
+            self._get_temperature_index = self._eigen_data_dict[
                 self.elements[0]
             ]._get_temperature_index
 
@@ -578,7 +576,7 @@ class NEI:
 
         equil_ionfracs = {}
         for element in self.elements:
-            equil_ionfracs[element] = self.EigenDataDict[element].equilibrium_state(
+            equil_ionfracs[element] = self.eigen_data_dict[element].equilibrium_state(
                 T_e.value
             )
 
@@ -968,12 +966,12 @@ class NEI:
         return self._hydrogen_number_density(time)
 
     @property
-    def EigenDataDict(self) -> Dict[str, EigenData]:
+    def eigen_data_dict(self) -> Dict[str, EigenData]:
         """
         Return a `dict` containing `~plasmapy_nei.eigen.EigenData` instances
         for each element.
         """
-        return self._EigenDataDict
+        return self._eigen_data_dict
 
     @property
     def initial(self) -> IonizationStates:
@@ -1280,9 +1278,9 @@ class NEI:
                 nstates = self.results.nstates[elem]
                 f0 = self.results._ionic_fractions[elem][self.results._index - 1, :]
 
-                evals = self.EigenDataDict[elem].eigenvalues(T_e=T_e)
-                evect = self.EigenDataDict[elem].eigenvectors(T_e=T_e)
-                evect_inverse = self.EigenDataDict[elem].eigenvector_inverses(T_e=T_e)
+                evals = self.eigen_data_dict[elem].eigenvalues(T_e=T_e)
+                evect = self.eigen_data_dict[elem].eigenvectors(T_e=T_e)
+                evect_inverse = self.eigen_data_dict[elem].eigenvector_inverses(T_e=T_e)
 
                 diagonal_evals = np.zeros((nstates, nstates), dtype=np.float64)
                 for ii in range(0, nstates):
