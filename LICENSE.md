@@ -1,6 +1,6 @@
 # PlasmaPy-NEI License
 
-Copyright (c) 2020, PlasmaPy-NEI Developers.
+Copyright (c) 2020–2021, PlasmaPy-NEI Developers.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
