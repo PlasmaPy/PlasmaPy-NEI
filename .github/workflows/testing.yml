@@ -69,7 +69,7 @@ jobs:
         key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
 
     - name: Git LFS Pull
-      run: git lfs pull       fetch-depth: 0
+      run: git lfs pull
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
