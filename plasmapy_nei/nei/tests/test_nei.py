@@ -6,10 +6,12 @@ try:
     from plasmapy.atomic import IonizationStates, particle_symbol
 except ImportError:
     from plasmapy.particles import IonizationStates, particle_symbol
-from plasmapy_nei.nei import NEI
-from plasmapy_nei.eigen import EigenData
+
 import numpy as np
 import pytest
+
+from plasmapy_nei.eigen import EigenData
+from plasmapy_nei.nei import NEI
 
 inputs_dict = {"H": [0.9, 0.1], "He": [0.5, 0.3, 0.2]}
 abundances = {"H": 1, "He": 0.1}

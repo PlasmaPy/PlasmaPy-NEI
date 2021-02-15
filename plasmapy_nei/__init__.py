@@ -11,5 +11,4 @@ except Exception as exc:
 finally:
     del warnings
 
-from . import eigen
-from . import nei
+from . import eigen, nei

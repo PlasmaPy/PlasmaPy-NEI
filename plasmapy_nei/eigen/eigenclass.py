@@ -5,12 +5,13 @@ ionization and recombination rates.
 
 __all__ = ["EigenData", "eigen_data_dict"]
 
+import warnings
+
+import astropy.units as u
 import h5py
 import numpy as np
-from numpy import linalg as LA
 import pkg_resources
-import warnings
-import astropy.units as u
+from numpy import linalg as LA
 
 try:
     from plasmapy.particles import Particle, particle_input
@@ -169,11 +170,13 @@ class EigenData:
         )
 
         self._eigenvectors = np.ndarray(
-            shape=(self.ntemp, self.nstates, self.nstates), dtype=np.float64,
+            shape=(self.ntemp, self.nstates, self.nstates),
+            dtype=np.float64,
         )
 
         self._eigenvector_inverses = np.ndarray(
-            shape=(self.ntemp, self.nstates, self.nstates), dtype=np.float64,
+            shape=(self.ntemp, self.nstates, self.nstates),
+            dtype=np.float64,
         )
 
         self._ionization_rate[:, :] = c_rate[:, :]
@@ -196,7 +199,9 @@ class EigenData:
             rarr = r_rate[temperature_index, :]
 
             eqi = _get_equilibrium_charge_states(
-                carr, rarr, self.element.atomic_number,
+                carr,
+                rarr,
+                self.element.atomic_number,
             )
 
             for ion in range(1, self.nstates - 1):
