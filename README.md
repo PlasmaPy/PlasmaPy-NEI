@@ -35,7 +35,7 @@ Smithsonian Institution.
 We love contributions! PlasmaPy-NEI is open source,
 built on open source, and we'd love to have you in our community.
 
-### Imposter syndrome disclaimer 
+### Imposter syndrome disclaimer
 
 We want your help. No, really.
 

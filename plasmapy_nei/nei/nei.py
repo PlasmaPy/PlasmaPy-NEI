@@ -3,10 +3,12 @@
 __all__ = ["NEI", "NEIError", "SimulationResults"]
 
 
-import numpy as np
-from typing import Union, Optional, List, Dict, Callable
+from typing import Callable, Dict, List, Optional, Union
+
 import astropy.units as u
+import numpy as np
 from scipy import interpolate, optimize
+
 from plasmapy_nei.eigen import EigenData, eigen_data_dict
 
 try:
@@ -15,7 +17,6 @@ except ImportError:
     from plasmapy.particles import IonizationStates, atomic_number
 
 import warnings
-
 
 # TODO: Allow this to keep track of velocity and position too, and
 # eventually to have density and temperature be able to be functions of
@@ -478,7 +479,11 @@ class NEI:
             n_init = self.hydrogen_number_density(self.time_start)
 
             self.initial = IonizationStates(
-                inputs=inputs, abundances=abundances, T_e=T_e_init, n=n_init, tol=tol,
+                inputs=inputs,
+                abundances=abundances,
+                T_e=T_e_init,
+                n=n_init,
+                tol=tol,
             )
 
             self.tol = tol
@@ -524,7 +529,9 @@ class NEI:
             ) from e
 
     def equil_ionic_fractions(
-        self, T_e: u.Quantity = None, time: u.Quantity = None,
+        self,
+        T_e: u.Quantity = None,
+        time: u.Quantity = None,
     ) -> Dict[str, np.ndarray]:
         """
         Return the equilibrium ionic fractions for a temperature or at
@@ -1178,7 +1185,13 @@ class NEI:
 
         try:
             new_dt = (
-                optimize.brentq(T_val, *dt_bounds, xtol=1e-14, maxiter=1000, disp=True,)
+                optimize.brentq(
+                    T_val,
+                    *dt_bounds,
+                    xtol=1e-14,
+                    maxiter=1000,
+                    disp=True,
+                )
                 * u.s
             )
         except Exception as exc:

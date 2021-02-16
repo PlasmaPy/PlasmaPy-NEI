@@ -5,9 +5,10 @@ try:
 except ImportError:
     from plasmapy import particles as atomic
 
-from plasmapy_nei.eigen import EigenData
-import pytest
 import numpy as np
+import pytest
+
+from plasmapy_nei.eigen import EigenData
 
 
 @pytest.mark.parametrize("atomic_numb", np.arange(1, 30))
@@ -54,12 +55,12 @@ def time_advance_solver_for_testing(natom, te, ne, dt, f0, table):
 @pytest.mark.parametrize("natom", [1, 2, 6, 7, 8])
 def test_reachequlibrium_state(natom):
     """
-        Starting the random initial distribution, the charge states will reach
-        to equilibrium cases after a long time.
-        In this test, we set the ionization and recombination rates at
-        Te0=2.0e6 K and plasma density ne0=1.0e+7. A random charge states
-        distribution will be finally closed to equilibrium distribution at
-        2.0e6K.
+    Starting the random initial distribution, the charge states will reach
+    to equilibrium cases after a long time.
+    In this test, we set the ionization and recombination rates at
+    Te0=2.0e6 K and plasma density ne0=1.0e+7. A random charge states
+    distribution will be finally closed to equilibrium distribution at
+    2.0e6K.
     """
     #
     # Initial conditions, set plasma temperature, density and dt
