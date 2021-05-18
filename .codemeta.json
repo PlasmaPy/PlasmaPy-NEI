@@ -27,7 +27,13 @@
     ],
     "softwareRequirements": [
         "Python 3.7",
-        "plasmapy >= 0.3.1"
+        "astropy >= 4.0",
+        "h5py >= 3.0",
+        "matplotlib >= 3.1",
+        "numpy >= 1.18",
+        "plasmapy >= 0.6",
+        "scipy >= 1.3",
+        "setuptools >= 47.0"
     ],
     "contributor": [
         {
