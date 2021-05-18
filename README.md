@@ -1,29 +1,35 @@
-# PlasmaPy-NEI
+# Non-equilibrium ionization modeling with Python
 
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
-[![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy-nei:openastronomy.org)
-[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
-
-[![Build Status](https://dev.azure.com/plasmapy/PlasmaPy-NEI/_apis/build/status/PlasmaPy.PlasmaPy-NEI?branchName=master)](https://dev.azure.com/plasmapy/PlasmaPy-NEI/_build/latest?definitionId=2&branchName=master)
-[![Build Status](https://travis-ci.org/PlasmaPy/PlasmaPy-NEI.svg?branch=master)](https://travis-ci.org/PlasmaPy/PlasmaPy-NEI)
-[![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy-NEI/branch/master/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy-NEI)
+[![GitHub Actions — CI](https://github.com/PlasmaPy/PlasmaPy-NEI/workflows/CI/badge.svg)](https://github.com/PlasmaPy/PlasmaPy-NEI/actions?query=workflow%3ACI+branch%3Amain)
+[![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy-NEI/branch/main/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy-NEI)
+[![GitHub Actions — Style linters](https://github.com/PlasmaPy/PlasmaPy/workflows/Style%20linters/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3AStyle-linters+branch%3Amaster)
 [![Documentation Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy-nei.readthedocs.io/en/latest/?badge=latest)
 
+<!---
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
+--->
 
+<!---[![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy-nei:openastronomy.org)--->
 
+[![Matrix](https://img.shields.io/badge/Matrix-join%20chat-blueviolet?style=flat&logo=matrix)](https://app.element.io/#/room/#plasmapy-nei:openastronomy.org)
+[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 
+<!---
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo._____.svg)](https://doi.org/10.5281/zenodo._____)
+--->
 
-PlasmaPy-NEI will be an affiliated package of PlasmaPy designed to perform
-non-equilibrium ionization modeling of plasma.  Use cases include plasma in
-the solar wind and during coronal mass ejections.  Please read more on the
-[PlasmaPy-NEI online documentation](https://nei.plasmapy.org).
+PlasmaPy-NEI is being developed into an affiliated package of PlasmaPy
+designed to perform non-equilibrium ionization modeling of plasma.  Use
+cases include plasma in the solar wind and during coronal mass
+ejections.  Please read more on the
+[online documentation](https://nei.plasmapy.org).
 
 ## License
 
 
 This project is Copyright (c) PlasmaPy Developers and licensed under
-the terms of the BSD+Patent license. Additional licenses are found in the
-`licenses` folder.
+the terms of the BSD+Patent license. Additional licenses are found in
+the `licenses` folder.
 
 ## Acknowledgements
 
@@ -35,7 +41,7 @@ Smithsonian Institution.
 We love contributions! PlasmaPy-NEI is open source,
 built on open source, and we'd love to have you in our community.
 
-### Imposter syndrome disclaimer
+### Imposter syndrome disclaimer 
 
 We want your help. No, really.
 
