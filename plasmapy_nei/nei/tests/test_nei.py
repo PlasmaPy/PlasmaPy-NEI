@@ -1,14 +1,9 @@
 """Tests for non-equilibrium ionization modeling classes."""
 
 import astropy.units as u
-
-try:
-    from plasmapy.atomic import IonizationStates, particle_symbol
-except ImportError:
-    from plasmapy.particles import IonizationStates, particle_symbol
-
 import numpy as np
 import pytest
+from plasmapy.particles import IonizationStateCollection, particle_symbol
 
 from plasmapy_nei.eigen import EigenData
 from plasmapy_nei.nei import NEI
@@ -202,7 +197,7 @@ def test_time_max(name_inputs_instance):
 
 def test_initial_type(name_inputs_instance):
     test_name, inputs, instance = name_inputs_instance
-    assert isinstance(instance.initial, IonizationStates)
+    assert isinstance(instance.initial, IonizationStateCollection)
 
 
 def test_n_input(name_inputs_instance):

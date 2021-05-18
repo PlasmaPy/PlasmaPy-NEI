@@ -3,20 +3,15 @@
 __all__ = ["NEI", "NEIError", "SimulationResults"]
 
 
+import warnings
 from typing import Callable, Dict, List, Optional, Union
 
 import astropy.units as u
 import numpy as np
+from plasmapy.particles import IonizationStateCollection, atomic_number
 from scipy import interpolate, optimize
 
 from plasmapy_nei.eigen import EigenData, eigen_data_dict
-
-try:
-    from plasmapy.atomic import IonizationStates, atomic_number
-except ImportError:
-    from plasmapy.particles import IonizationStates, atomic_number
-
-import warnings
 
 # TODO: Allow this to keep track of velocity and position too, and
 # eventually to have density and temperature be able to be functions of
@@ -34,8 +29,8 @@ import warnings
 
 # TODO: In this file and test_nei.py, there are a few places with
 #       initial.ionic_fractions.keys(), where initial is an instance
-#       of IonizationStates.  This workaround exists because I forgot
-#       to put in an `elements` attribute in IonizationStates, and
+#       of IonizationStateCollection.  This workaround exists because I forgot
+#       to put in an `elements` attribute in IonizationStateCollection, and
 #       should be corrected.
 
 
@@ -51,8 +46,8 @@ class SimulationResults:
 
     Parameters
     ----------
-    initial: plasmapy.atomic.IonizationStates
-        The ``IonizationStates`` instance representing the ionization
+    initial: plasmapy.atomic.IonizationStateCollection
+        The ``IonizationStateCollection`` instance representing the ionization
         states of different elements and plasma properties as the
         initial conditions.
 
@@ -73,7 +68,7 @@ class SimulationResults:
 
     def __init__(
         self,
-        initial: IonizationStates,
+        initial: IonizationStateCollection,
         n_init: u.Quantity,
         T_e_init: u.Quantity,
         max_steps: int,
@@ -425,7 +420,7 @@ class NEI:
     >>> sim.final.T_e
     <Quantity 40000. K>
 
-    Both ``initial`` and ``final`` are instances of the ``IonizationStates``
+    Both ``initial`` and ``final`` are instances of the ``IonizationStateCollection``
     class.
 
     Notes
@@ -478,7 +473,7 @@ class NEI:
             T_e_init = self.electron_temperature(self.time_start)
             n_init = self.hydrogen_number_density(self.time_start)
 
-            self.initial = IonizationStates(
+            self.initial = IonizationStateCollection(
                 inputs=inputs,
                 abundances=abundances,
                 T_e=T_e_init,
@@ -488,7 +483,7 @@ class NEI:
 
             self.tol = tol
 
-            # TODO: Update IonizationStates in PlasmaPy to have elements attribute
+            # TODO: Update IonizationStateCollection in PlasmaPy to have elements attribute
 
             self.elements = list(self.initial.ionic_fractions.keys())
 
@@ -608,7 +603,7 @@ class NEI:
     def abundances(self, abund: Dict[Union[str, int], Union[float, int]]):
 
         # TODO: Update initial, etc. when abundances is updated. The
-        # checks within IonizationStates will also be checks for
+        # checks within IonizationStateCollection will also be checks for
 
         # TODO: Update initial and other attributes when abundances is
         # updated.
@@ -981,7 +976,7 @@ class NEI:
         return self._eigen_data_dict
 
     @property
-    def initial(self) -> IonizationStates:
+    def initial(self) -> IonizationStateCollection:
         """
         Return the ionization states of the plasma at the beginning of
         the simulation.
@@ -989,16 +984,16 @@ class NEI:
         return self._initial
 
     @initial.setter
-    def initial(self, initial_states: IonizationStates):
-        if isinstance(initial_states, IonizationStates):
+    def initial(self, initial_states: IonizationStateCollection):
+        if isinstance(initial_states, IonizationStateCollection):
             self._initial = initial_states
             self._elements = (
                 initial_states.ionic_fractions.keys()
-            )  # TODO IonizationStates
+            )  # TODO IonizationStateCollection
         elif initial_states is None:
             self._ionstates = None
         else:
-            raise TypeError("Expecting an IonizationStates instance.")
+            raise TypeError("Expecting an IonizationStateCollection instance.")
 
     @property
     def results(self) -> SimulationResults:
@@ -1013,7 +1008,7 @@ class NEI:
             raise AttributeError("The simulation has not yet been performed.")
 
     @property
-    def final(self) -> IonizationStates:
+    def final(self) -> IonizationStateCollection:
         """
         Return the ionization states of the plasma at the end of the
         simulation.
@@ -1074,7 +1069,7 @@ class NEI:
             for element in self.elements
         }
 
-        self._final = IonizationStates(
+        self._final = IonizationStateCollection(
             inputs=final_ionfracs,
             abundances=self.abundances,
             n=np.sum(self.results.number_densities["H"][-1, :]),  # modify this later?,
