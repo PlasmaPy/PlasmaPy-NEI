@@ -477,7 +477,7 @@ class NEI:
                 inputs=inputs,
                 abundances=abundances,
                 T_e=T_e_init,
-                n=n_init,
+                n0=n_init,
                 tol=tol,
             )
 
@@ -1073,7 +1073,7 @@ class NEI:
         self._final = IonizationStateCollection(
             inputs=final_ionfracs,
             abundances=self.abundances,
-            n=np.sum(self.results.number_densities["H"][-1, :]),  # modify this later?,
+            n0=np.sum(self.results.number_densities["H"][-1, :]),  # modify this later?,
             T_e=self.results.T_e[-1],
             tol=1e-6,
         )
