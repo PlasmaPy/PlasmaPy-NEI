@@ -483,7 +483,8 @@ class NEI:
 
             self.tol = tol
 
-            # TODO: Update IonizationStateCollection in PlasmaPy to have elements attribute
+            # TODO: Update IonizationStateCollection in PlasmaPy to have elements
+            # attribute
 
             self.elements = list(self.initial.ionic_fractions.keys())
 
