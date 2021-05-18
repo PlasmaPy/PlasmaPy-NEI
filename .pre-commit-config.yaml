@@ -13,7 +13,7 @@ repos:
     -   id: check-ast
     -   id: requirements-txt-fixer
 -   repo: https://github.com/PyCQA/isort
-    rev: 5.7.0
+    rev: 5.8.0
     hooks:
     -   id: isort
         name: isort
@@ -23,11 +23,15 @@ repos:
         types: [python]
         args: [-m=3, -tc]
 -   repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 21.4b2
     hooks:
     -   id: black
--   repo: https://gitlab.com/pycqa/flake8
-    rev: '3.8.4'
-    hooks:
-    -   id: flake8
-        additional_dependencies: [flake8-docstrings]
+- repo: https://github.com/nbQA-dev/nbQA
+  rev: 0.8.0
+  hooks:
+    - id: nbqa-black
+      additional_dependencies: [black==19.10b0]
+      args: [--nbqa-mutate]
+    - id: nbqa-isort
+      additional_dependencies: [isort==5.7.0]
+      args: [--nbqa-mutate]
