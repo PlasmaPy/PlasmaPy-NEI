@@ -18,17 +18,18 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo._____.svg)](https://doi.org/10.5281/zenodo._____)
 --->
 
-PlasmaPy-NEI will be an affiliated package of PlasmaPy designed to perform
-non-equilibrium ionization modeling of plasma.  Use cases include plasma in
-the solar wind and during coronal mass ejections.  Please read more on the
-[PlasmaPy-NEI online documentation](https://nei.plasmapy.org).
+PlasmaPy-NEI is being developed into an affiliated package of PlasmaPy
+designed to perform non-equilibrium ionization modeling of plasma.  Use
+cases include plasma in the solar wind and during coronal mass
+ejections.  Please read more on the
+[online documentation](https://nei.plasmapy.org).
 
 ## License
 
 
 This project is Copyright (c) PlasmaPy Developers and licensed under
-the terms of the BSD+Patent license. Additional licenses are found in the
-`licenses` folder.
+the terms of the BSD+Patent license. Additional licenses are found in
+the `licenses` folder.
 
 ## Acknowledgements
 
@@ -40,7 +41,7 @@ Smithsonian Institution.
 We love contributions! PlasmaPy-NEI is open source,
 built on open source, and we'd love to have you in our community.
 
-### Imposter syndrome disclaimer
+### Imposter syndrome disclaimer 
 
 We want your help. No, really.
 
