@@ -1,12 +1,8 @@
 """Tests of the class to store package data."""
 
-try:
-    from plasmapy import atomic
-except ImportError:
-    from plasmapy import particles as atomic
-
 import numpy as np
 import pytest
+from plasmapy import particles
 
 from plasmapy_nei.eigen import EigenData
 
@@ -14,7 +10,7 @@ from plasmapy_nei.eigen import EigenData
 @pytest.mark.parametrize("atomic_numb", np.arange(1, 30))
 def test_instantiation(atomic_numb):
     try:
-        element_symbol = atomic.atomic_symbol(int(atomic_numb))
+        element_symbol = particles.atomic_symbol(int(atomic_numb))
         EigenData(element=element_symbol)
     except Exception as exc:
         raise Exception(
@@ -32,13 +28,13 @@ def time_advance_solver_for_testing(natom, te, ne, dt, f0, table):
     evect = table.eigenvectors(T_e_index=common_index)
     evect_invers = table.eigenvector_inverses(T_e_index=common_index)
 
-    # define the temperary diagonal matrix
-    diagona_evals = np.zeros((natom + 1, natom + 1))
+    # define the temporary diagonal matrix
+    diagonal_evals = np.zeros((natom + 1, natom + 1))
     for ii in range(0, natom + 1):
-        diagona_evals[ii, ii] = np.exp(evals[ii] * dt * ne)
+        diagonal_evals[ii, ii] = np.exp(evals[ii] * dt * ne)
 
     # matrix operation
-    matrix_1 = np.dot(diagona_evals, evect)
+    matrix_1 = np.dot(diagonal_evals, evect)
     matrix_2 = np.dot(evect_invers, matrix_1)
 
     # get ionic fraction at (time+dt)
@@ -53,19 +49,19 @@ def time_advance_solver_for_testing(natom, te, ne, dt, f0, table):
 
 
 @pytest.mark.parametrize("natom", [1, 2, 6, 7, 8])
-def test_reachequlibrium_state(natom):
+def test_reach_equilibrium_state(natom):
     """
-    Starting the random initial distribution, the charge states will reach
-    to equilibrium cases after a long time.
+    Starting from a random initial distribution, test that charge states
+    reach an equilibrium after a long time interval.
     In this test, we set the ionization and recombination rates at
     Te0=2.0e6 K and plasma density ne0=1.0e+7. A random charge states
     distribution will be finally closed to equilibrium distribution at
     2.0e6K.
     """
-    #
+
     # Initial conditions, set plasma temperature, density and dt
-    #
-    element_symbol = atomic.atomic_symbol(int(natom))
+
+    element_symbol = particles.atomic_symbol(int(natom))
     te0 = 1.0e6
     ne0 = 1.0e8
 
@@ -94,7 +90,7 @@ def test_reachequlibrium_state(natom):
     assert np.allclose(ft, table.equilibrium_state(T_e=te0))
 
 
-def test_reachequlibrium_state_multisteps(natom=8):
+def test_reach_equilibrium_state_multisteps(natom=8):
     """
     Starting the random initial distribution, the charge states will reach
     to equilibrium cases after a long time (multiple steps).

@@ -47,7 +47,7 @@ class SimulationResults:
     Parameters
     ----------
     initial: `~plasmapy.particles.IonizationStateCollection`
-        The ``IonizationStateCollection`` instance representing the ionization
+        The `IonizationStateCollection` instance representing the ionization
         states of different elements and plasma properties as the
         initial conditions.
 
