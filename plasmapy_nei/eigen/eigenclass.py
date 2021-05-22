@@ -5,12 +5,12 @@ ionization and recombination rates.
 
 __all__ = ["EigenData", "eigen_data_dict"]
 
-import warnings
-
 import astropy.units as u
 import h5py
 import numpy as np
 import pkg_resources
+import warnings
+
 from numpy import linalg as LA
 
 try:

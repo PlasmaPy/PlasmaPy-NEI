@@ -3,15 +3,15 @@
 __all__ = ["NEI", "NEIError", "SimulationResults"]
 
 
-import warnings
-from typing import Callable, Dict, List, Optional, Union
-
 import astropy.units as u
 import numpy as np
-from plasmapy.particles import IonizationStateCollection, atomic_number
-from scipy import interpolate, optimize
+import warnings
 
-from plasmapy_nei.eigen import EigenData, eigen_data_dict
+from scipy import interpolate, optimize
+from typing import Callable, Dict, List, Optional, Union
+
+from plasmapy.particles import atomic_number, IonizationStateCollection
+from plasmapy_nei.eigen import eigen_data_dict, EigenData
 
 # TODO: Allow this to keep track of velocity and position too, and
 # eventually to have density and temperature be able to be functions of

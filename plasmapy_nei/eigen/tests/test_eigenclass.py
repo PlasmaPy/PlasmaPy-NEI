@@ -2,8 +2,8 @@
 
 import numpy as np
 import pytest
-from plasmapy import particles
 
+from plasmapy import particles
 from plasmapy_nei.eigen import EigenData
 
 

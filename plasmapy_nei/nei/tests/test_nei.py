@@ -3,8 +3,8 @@
 import astropy.units as u
 import numpy as np
 import pytest
-from plasmapy.particles import IonizationStateCollection, particle_symbol
 
+from plasmapy.particles import IonizationStateCollection, particle_symbol
 from plasmapy_nei.eigen import EigenData
 from plasmapy_nei.nei import NEI
 
