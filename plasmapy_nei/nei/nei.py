@@ -46,22 +46,22 @@ class SimulationResults:
 
     Parameters
     ----------
-    initial: plasmapy.atomic.IonizationStateCollection
+    initial: `~plasmapy.particles.IonizationStateCollection`
         The ``IonizationStateCollection`` instance representing the ionization
         states of different elements and plasma properties as the
         initial conditions.
 
-    n_init: astropy.units.Quantity
+    n_init: `~astropy.units.Quantity`
         The initial number density scaling factor.
 
-    T_e_init: astropy.units.Quantity
+    T_e_init: `~astropy.units.Quantity`
         The initial electron temperature.
 
-    max_steps: int
+    max_steps: `int`
         The maximum number of time steps that the simulation can take
         before stopping.
 
-    time_start: astropy.units.Quantity
+    time_start: `~astropy.units.Quantity`
         The time at the start of the simulation.
 
     """
