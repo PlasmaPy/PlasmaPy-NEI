@@ -5,18 +5,8 @@
 [![GitHub Actions — Style linters](https://github.com/PlasmaPy/PlasmaPy/workflows/Style%20linters/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3AStyle-linters+branch%3Amaster)
 [![Documentation Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy-nei.readthedocs.io/en/latest/?badge=latest)
 
-<!---
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
---->
-
-<!---[![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy-nei:openastronomy.org)--->
-
 [![Matrix](https://img.shields.io/badge/Matrix-join%20chat-blueviolet?style=flat&logo=matrix)](https://app.element.io/#/room/#plasmapy-nei:openastronomy.org)
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
-
-<!---
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo._____.svg)](https://doi.org/10.5281/zenodo._____)
---->
 
 PlasmaPy-NEI is being developed into an affiliated package of PlasmaPy
 designed to perform non-equilibrium ionization modeling of plasma.  Use
@@ -41,7 +31,7 @@ Smithsonian Institution.
 We love contributions! PlasmaPy-NEI is open source,
 built on open source, and we'd love to have you in our community.
 
-### Imposter syndrome disclaimer 
+### Imposter syndrome disclaimer
 
 We want your help. No, really.
 
