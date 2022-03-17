@@ -10,7 +10,7 @@
 # -- Project information -----------------------------------------------------
 
 project = "PlasmaPy-NEI"
-copyright = "2020, PlasmaPy-NEI Developers"
+copyright = "2020–2022, PlasmaPy-NEI Developers"
 author = "PlasmaPy-NEI Developers"
 
 # The full version, including alpha/beta/rc tags
