@@ -176,7 +176,7 @@ class SimulationResults:
 
         except Exception as exc:
             raise NEIError(
-                f"Unable to assign parameters to Simulation instance "
+                "Unable to assign parameters to Simulation instance "
                 f"for index {index} at time = {new_time}.  The "
                 f"parameters are new_n = {new_n}, new_T_e = {new_T_e}, "
                 f"and new_ionic_fractions = {new_ionfracs}."
@@ -512,7 +512,7 @@ class NEI:
 
         except Exception as e:
             raise NEIError(
-                f"Unable to create NEI object for:\n"
+                "Unable to create NEI object for:\n"
                 f"     inputs = {inputs}\n"
                 f" abundances = {abundances}\n"
                 f"        T_e = {T_e}\n"
@@ -903,7 +903,7 @@ class NEI:
                 warnings.warn(
                     f"{time} is not in the simulation time interval:"
                     f"[{self.time_start}, {self.time_max}]. "
-                    f"May be extrapolating temperature."
+                    "May be extrapolating temperature."
                 )
             T_e = self._electron_temperature(time.to(u.s))
             if np.isnan(T_e) or np.isinf(T_e) or T_e < 0 * u.K:
@@ -911,7 +911,7 @@ class NEI:
             return T_e
         except Exception as exc:
             raise NEIError(
-                f"Unable to calculate a valid electron temperature " f"for time {time}"
+                f"Unable to calculate a valid electron temperature for time {time}"
             ) from exc
 
     @property
@@ -1052,7 +1052,7 @@ class NEI:
             except StopIteration:
                 break
             except Exception as exc:
-                raise NEIError(f"Unable to complete simulation.") from exc
+                raise NEIError("Unable to complete simulation.") from exc
 
         self._finalize_simulation()
 
@@ -1337,13 +1337,13 @@ class NEI:
         Returns the time value or array given the index/indices
 
         Parameters
-        ------
+        ----------
         index: array-like
                A value or array of values representing the index of
                the time array created by the simulation
 
         Returns
-        ------
+        -------
         get_time: astropy.units.Quantity
                   The time value associated with index input(s)
         """
@@ -1355,13 +1355,13 @@ class NEI:
         Returns the closest index value or array for the given time(s)
 
         Parameters
-        ------
+        ----------
         time: array-like,
                A value or array of values representing the values of
                the time array created by the simulation
 
         Returns
-        ------
+        -------
         index: int or array-like,
                   The index value associated with the time input(s)
         """

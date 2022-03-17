@@ -130,8 +130,8 @@ class EigenData:
         except OSError as oserror:
             raise IOError(
                 f"Unable to import {filename} using h5py.  This error could "
-                f"happen, for example, if the repository was cloned without "
-                f"having git-lfs installed."
+                "happen, for example, if the repository was cloned without "
+                "having git-lfs installed."
             ) from oserror
         else:
             self._temperature_grid = file["te_gird"][:]  # TODO: fix typo in HDF5 file
