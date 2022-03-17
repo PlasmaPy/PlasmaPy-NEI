@@ -4,7 +4,7 @@ numpydoc
 pillow
 pytest
 setuptools-scm
-sphinx <= 2.4.4
+sphinx < 4.4.1
 sphinx-automodapi
 sphinx-gallery
 sphinx_rtd_theme
