@@ -5,10 +5,10 @@ __all__ = ["eigen", "nei"]
 import warnings
 
 try:
-    from .version import __version__
-except Exception as exc:
+    from plasmapy_nei.version import __version__
+except Exception:
     warnings.warn("Unable to import __version__")
 finally:
     del warnings
 
-from . import eigen, nei
+from plasmapy_nei import eigen, nei

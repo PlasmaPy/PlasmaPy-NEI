@@ -267,17 +267,17 @@ class EigenData:
             return 0
         elif T_e > T_e_grid_max:
             warnings.warn(
-                f"Temperature exceeds the temperature grid "
-                f"boundary: temperature index will be reset "
+                "Temperature exceeds the temperature grid "
+                "boundary: temperature index will be reset "
                 f"to {self._ntemp - 1}",
                 UserWarning,
             )
             return self._ntemp - 1
         elif T_e < T_e_grid_min:
             warnings.warn(
-                f"Temperature is below the temperature grid "
-                f"boundary: temperature index will be reset to "
-                f"0.",
+                "Temperature is below the temperature grid "
+                "boundary: temperature index will be reset to "
+                "0.",
                 UserWarning,
             )
             return 0
@@ -297,7 +297,7 @@ class EigenData:
     def temperature(self):
         return self._temperature
 
-    @property
+    @temperature.setter
     def temperature(self, T_e):
         self._temperature = T_e
         self._te_index = self._get_temperature_index(T_e)

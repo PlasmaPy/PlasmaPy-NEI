@@ -6,7 +6,6 @@ import pytest
 
 from plasmapy.particles import IonizationStateCollection, particle_symbol
 
-from plasmapy_nei.eigen import EigenData
 from plasmapy_nei.nei import NEI
 
 inputs_dict = {"H": [0.9, 0.1], "He": [0.5, 0.3, 0.2]}
