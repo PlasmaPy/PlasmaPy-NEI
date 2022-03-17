@@ -79,6 +79,7 @@ intersphinx_mapping = {
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
     "pytest": ("https://docs.pytest.org/en/stable/", None),
+    "plasmapy": ("https://docs.plasmapy.org/en/stable/", None),
     "sphinx_automodapi": (
         "https://sphinx-automodapi.readthedocs.io/en/latest/",
         None,
