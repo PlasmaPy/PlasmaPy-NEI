@@ -35,10 +35,9 @@ honor_noqa = true
 lines_between_types = 1
 
 [tool.towncrier]
-package = "plasmapy"
+package = "plasmapy_nei"
 filename = "CHANGELOG.rst"
 directory = "changelog/"
-issue_format = "`#{issue} <https://github.com/plasmapy/plasmapy/pull/{issue}>`__"
 
 [[tool.towncrier.type]]
 directory = "breaking"
