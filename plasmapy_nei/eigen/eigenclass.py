@@ -5,18 +5,14 @@ ionization and recombination rates.
 
 __all__ = ["EigenData", "eigen_data_dict"]
 
-import warnings
-
 import astropy.units as u
 import h5py
 import numpy as np
 import pkg_resources
-from numpy import linalg as LA
+import warnings
 
-try:
-    from plasmapy.particles import Particle, particle_input
-except (ImportError, ModuleNotFoundError):
-    from plasmapy.atomic import Particle, particle_input
+from numpy import linalg as LA
+from plasmapy.particles import Particle, particle_input
 
 max_atomic_number = 30  # TODO: double check if this is the correct number
 
