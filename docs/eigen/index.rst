@@ -7,4 +7,4 @@
 .. py:currentmodule:: plasmapy_nei.eigen
 
 .. automodapi:: plasmapy_nei.eigen
-   :no-heading:
+   :noindex:

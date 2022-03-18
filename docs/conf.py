@@ -61,6 +61,7 @@ extensions = [
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
+    "sphinx_automodapi.automodapi",
     # "hoverxref.extension",
 ]
 
@@ -99,6 +100,8 @@ hoverxref_intersphinx = [
     "sphinx",
     "numba",
 ]
+
+numpydoc_show_class_members = False
 
 autoclass_content = "both"
 
