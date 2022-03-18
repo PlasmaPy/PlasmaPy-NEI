@@ -45,7 +45,7 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, particle: Particle):
 
     nstates = particle.atomic_number + 1
     concentration = np.zeros(nstates)
-    fraction = np.zeros(nstates + 1)
+    ionization_fractions = np.zeros(nstates + 1)
     ionization_rate = np.zeros(nstates + 1)
     recombination_rate = np.zeros(nstates + 1)
 
@@ -55,51 +55,59 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, particle: Particle):
         recombination_rate[i + 1] = recomb_rate[i]
 
     # f[0] = 0.0 from initialization
-    fraction[1] = 1.0
+    ionization_fractions[1] = 1.0
 
-    fraction[2] = ionization_rate[1] * fraction[1] / recombination_rate[2]
+    ionization_fractions[2] = (
+        ionization_rate[1] * ionization_fractions[1] / recombination_rate[2]
+    )
 
     # The solution for hydrogen may be found analytically.
     if particle.element == "H":
-        fraction[1] = 1.0 / (1.0 + ionization_rate[1] / recombination_rate[2])
-        fraction[2] = ionization_rate[1] * fraction[1] / recombination_rate[2]
-        concentration[0:2] = fraction[1:3]
+        ionization_fractions[1] = 1.0 / (
+            1.0 + ionization_rate[1] / recombination_rate[2]
+        )
+        ionization_fractions[2] = (
+            ionization_rate[1] * ionization_fractions[1] / recombination_rate[2]
+        )
+        concentration[0:2] = ionization_fractions[1:3]
         return concentration
 
     # for other elements
 
     for k in range(2, particle.atomic_number):
-        fraction[k + 1] = (
-            -ionization_rate[k - 1] * fraction[k - 1]
-            + (ionization_rate[k] + recombination_rate[k]) * fraction[k]
+        ionization_fractions[k + 1] = (
+            -ionization_rate[k - 1] * ionization_fractions[k - 1]
+            + (ionization_rate[k] + recombination_rate[k]) * ionization_fractions[k]
         ) / recombination_rate[k + 1]
 
-    fraction[particle.atomic_number + 1] = (
+    ionization_fractions[particle.atomic_number + 1] = (
         ionization_rate[particle.atomic_number]
-        * fraction[particle.atomic_number]
+        * ionization_fractions[particle.atomic_number]
         / recombination_rate[particle.atomic_number + 1]
     )
 
-    fraction[1] = 1.0 / np.sum(fraction)
+    ionization_fractions[1] = 1.0 / np.sum(ionization_fractions)
 
-    fraction[2] = ionization_rate[1] * fraction[1] / recombination_rate[2]
+    ionization_fractions[2] = (
+        ionization_rate[1] * ionization_fractions[1] / recombination_rate[2]
+    )
 
     for k in range(2, particle.atomic_number):
-        fraction[k + 1] = (
-            -ionization_rate[k - 1] * fraction[k - 1]
-            + (ionization_rate[k] + recombination_rate[k]) * fraction[k]
+        ionization_fractions[k + 1] = (
+            -ionization_rate[k - 1] * ionization_fractions[k - 1]
+            + (ionization_rate[k] + recombination_rate[k]) * ionization_fractions[k]
         ) / recombination_rate[k + 1]
 
-    fraction[particle.atomic_number + 1] = (
+    ionization_fractions[particle.atomic_number + 1] = (
         ionization_rate[particle.atomic_number]
-        * fraction[particle.atomic_number]
+        * ionization_fractions[particle.atomic_number]
         / recombination_rate[particle.atomic_number + 1]
     )
 
     # normalize the distribution
-    fraction = fraction / np.sum(fraction)
+    ionization_fractions = ionization_fractions / np.sum(ionization_fractions)
 
-    concentration[0:nstates] = fraction[1 : nstates + 1]
+    concentration[0:nstates] = ionization_fractions[1 : nstates + 1]
     return concentration
 
 
@@ -120,10 +128,6 @@ class EigenData:
     """
 
     def _validate_element(self, element):
-
-        # The following might not be needed if the check is in @particle_input
-        if not element.is_category(require="element", exclude=["ion", "isotope"]):
-            raise ValueError(f"{element} is not an element")
 
         if element.atomic_number > max_atomic_number:
             raise ValueError("Need an element")
@@ -257,7 +261,7 @@ class EigenData:
                         i, j
                     ]
 
-    @particle_input
+    @particle_input(require="element", exclude=["ion", "isotope"])
     def __init__(self, element: Particle):
 
         try:
