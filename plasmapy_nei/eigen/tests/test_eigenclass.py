@@ -1,12 +1,9 @@
 """Tests of the class to store package data."""
 
-try:
-    from plasmapy import atomic
-except ImportError:
-    from plasmapy import particles as atomic
-
 import numpy as np
 import pytest
+
+from plasmapy import particles
 
 from plasmapy_nei.eigen import EigenData
 
@@ -14,7 +11,7 @@ from plasmapy_nei.eigen import EigenData
 @pytest.mark.parametrize("atomic_numb", np.arange(1, 30))
 def test_instantiation(atomic_numb):
     try:
-        element_symbol = atomic.atomic_symbol(int(atomic_numb))
+        element_symbol = particles.atomic_symbol(int(atomic_numb))
         EigenData(element=element_symbol)
     except Exception as exc:
         raise Exception(
@@ -65,7 +62,7 @@ def test_reachequlibrium_state(natom):
     #
     # Initial conditions, set plasma temperature, density and dt
     #
-    element_symbol = atomic.atomic_symbol(int(natom))
+    element_symbol = particles.atomic_symbol(int(natom))
     te0 = 1.0e6
     ne0 = 1.0e8
 

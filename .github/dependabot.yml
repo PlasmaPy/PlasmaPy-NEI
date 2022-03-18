@@ -9,7 +9,7 @@ updates:
   assignees:
   - namurphy
   schedule:
-    interval: daily
+    interval: weekly
 - package-ecosystem: github-actions
   directory: /
   reviewers:
@@ -17,4 +17,4 @@ updates:
   assignees:
   - namurphy
   schedule:
-    interval: daily
+    interval: weekly

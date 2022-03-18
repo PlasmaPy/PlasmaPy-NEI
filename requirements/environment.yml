@@ -1,0 +1,5 @@
+name: plasmapy_nei
+
+dependencies:
+- python=3.10
+- -r ../requirements.txt

@@ -5,18 +5,14 @@ ionization and recombination rates.
 
 __all__ = ["EigenData", "eigen_data_dict"]
 
-import warnings
-
 import astropy.units as u
 import h5py
 import numpy as np
 import pkg_resources
-from numpy import linalg as LA
+import warnings
 
-try:
-    from plasmapy.particles import Particle, particle_input
-except (ImportError, ModuleNotFoundError):
-    from plasmapy.atomic import Particle, particle_input
+from numpy import linalg as LA
+from plasmapy.particles import Particle, particle_input
 
 max_atomic_number = 30  # TODO: double check if this is the correct number
 
@@ -134,8 +130,8 @@ class EigenData:
         except OSError as oserror:
             raise IOError(
                 f"Unable to import {filename} using h5py.  This error could "
-                f"happen, for example, if the repository was cloned without "
-                f"having git-lfs installed."
+                "happen, for example, if the repository was cloned without "
+                "having git-lfs installed."
             ) from oserror
         else:
             self._temperature_grid = file["te_gird"][:]  # TODO: fix typo in HDF5 file
@@ -271,17 +267,17 @@ class EigenData:
             return 0
         elif T_e > T_e_grid_max:
             warnings.warn(
-                f"Temperature exceeds the temperature grid "
-                f"boundary: temperature index will be reset "
+                "Temperature exceeds the temperature grid "
+                "boundary: temperature index will be reset "
                 f"to {self._ntemp - 1}",
                 UserWarning,
             )
             return self._ntemp - 1
         elif T_e < T_e_grid_min:
             warnings.warn(
-                f"Temperature is below the temperature grid "
-                f"boundary: temperature index will be reset to "
-                f"0.",
+                "Temperature is below the temperature grid "
+                "boundary: temperature index will be reset to "
+                "0.",
                 UserWarning,
             )
             return 0
@@ -301,7 +297,7 @@ class EigenData:
     def temperature(self):
         return self._temperature
 
-    @property
+    @temperature.setter
     def temperature(self, T_e):
         self._temperature = T_e
         self._te_index = self._get_temperature_index(T_e)

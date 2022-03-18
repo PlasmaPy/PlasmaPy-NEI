@@ -3,20 +3,15 @@
 __all__ = ["NEI", "NEIError", "SimulationResults"]
 
 
-from typing import Callable, Dict, List, Optional, Union
-
 import astropy.units as u
 import numpy as np
-from scipy import interpolate, optimize
-
-from plasmapy_nei.eigen import EigenData, eigen_data_dict
-
-try:
-    from plasmapy.atomic import IonizationStates, atomic_number
-except ImportError:
-    from plasmapy.particles import IonizationStates, atomic_number
-
 import warnings
+
+from plasmapy.particles import atomic_number, IonizationStateCollection
+from scipy import interpolate, optimize
+from typing import Callable, Dict, List, Optional, Union
+
+from plasmapy_nei.eigen import eigen_data_dict, EigenData
 
 # TODO: Allow this to keep track of velocity and position too, and
 # eventually to have density and temperature be able to be functions of
@@ -34,8 +29,8 @@ import warnings
 
 # TODO: In this file and test_nei.py, there are a few places with
 #       initial.ionic_fractions.keys(), where initial is an instance
-#       of IonizationStates.  This workaround exists because I forgot
-#       to put in an `elements` attribute in IonizationStates, and
+#       of IonizationStateCollection.  This workaround exists because I forgot
+#       to put in an `elements` attribute in IonizationStateCollection, and
 #       should be corrected.
 
 
@@ -51,8 +46,8 @@ class SimulationResults:
 
     Parameters
     ----------
-    initial: plasmapy.atomic.IonizationStates
-        The ``IonizationStates`` instance representing the ionization
+    initial: plasmapy.particles.IonizationStateCollection
+        The ``IonizationStateCollection`` instance representing the ionization
         states of different elements and plasma properties as the
         initial conditions.
 
@@ -73,7 +68,7 @@ class SimulationResults:
 
     def __init__(
         self,
-        initial: IonizationStates,
+        initial: IonizationStateCollection,
         n_init: u.Quantity,
         T_e_init: u.Quantity,
         max_steps: int,
@@ -181,7 +176,7 @@ class SimulationResults:
 
         except Exception as exc:
             raise NEIError(
-                f"Unable to assign parameters to Simulation instance "
+                "Unable to assign parameters to Simulation instance "
                 f"for index {index} at time = {new_time}.  The "
                 f"parameters are new_n = {new_n}, new_T_e = {new_T_e}, "
                 f"and new_ionic_fractions = {new_ionfracs}."
@@ -425,7 +420,7 @@ class NEI:
     >>> sim.final.T_e
     <Quantity 40000. K>
 
-    Both ``initial`` and ``final`` are instances of the ``IonizationStates``
+    Both ``initial`` and ``final`` are instances of the ``IonizationStateCollection``
     class.
 
     Notes
@@ -478,17 +473,17 @@ class NEI:
             T_e_init = self.electron_temperature(self.time_start)
             n_init = self.hydrogen_number_density(self.time_start)
 
-            self.initial = IonizationStates(
+            self.initial = IonizationStateCollection(
                 inputs=inputs,
                 abundances=abundances,
                 T_e=T_e_init,
-                n=n_init,
+                n0=n_init,
                 tol=tol,
             )
 
             self.tol = tol
 
-            # TODO: Update IonizationStates in PlasmaPy to have elements attribute
+            # TODO: Update IonizationStateCollection in PlasmaPy to have elements attribute
 
             self.elements = list(self.initial.ionic_fractions.keys())
 
@@ -517,7 +512,7 @@ class NEI:
 
         except Exception as e:
             raise NEIError(
-                f"Unable to create NEI object for:\n"
+                "Unable to create NEI object for:\n"
                 f"     inputs = {inputs}\n"
                 f" abundances = {abundances}\n"
                 f"        T_e = {T_e}\n"
@@ -608,7 +603,7 @@ class NEI:
     def abundances(self, abund: Dict[Union[str, int], Union[float, int]]):
 
         # TODO: Update initial, etc. when abundances is updated. The
-        # checks within IonizationStates will also be checks for
+        # checks within IonizationStateCollection will also be checks for
 
         # TODO: Update initial and other attributes when abundances is
         # updated.
@@ -908,7 +903,7 @@ class NEI:
                 warnings.warn(
                     f"{time} is not in the simulation time interval:"
                     f"[{self.time_start}, {self.time_max}]. "
-                    f"May be extrapolating temperature."
+                    "May be extrapolating temperature."
                 )
             T_e = self._electron_temperature(time.to(u.s))
             if np.isnan(T_e) or np.isinf(T_e) or T_e < 0 * u.K:
@@ -916,7 +911,7 @@ class NEI:
             return T_e
         except Exception as exc:
             raise NEIError(
-                f"Unable to calculate a valid electron temperature " f"for time {time}"
+                f"Unable to calculate a valid electron temperature for time {time}"
             ) from exc
 
     @property
@@ -981,7 +976,7 @@ class NEI:
         return self._eigen_data_dict
 
     @property
-    def initial(self) -> IonizationStates:
+    def initial(self) -> IonizationStateCollection:
         """
         Return the ionization states of the plasma at the beginning of
         the simulation.
@@ -989,16 +984,16 @@ class NEI:
         return self._initial
 
     @initial.setter
-    def initial(self, initial_states: IonizationStates):
-        if isinstance(initial_states, IonizationStates):
+    def initial(self, initial_states: IonizationStateCollection):
+        if isinstance(initial_states, IonizationStateCollection):
             self._initial = initial_states
             self._elements = (
                 initial_states.ionic_fractions.keys()
-            )  # TODO IonizationStates
+            )  # TODO IonizationStateCollection
         elif initial_states is None:
             self._ionstates = None
         else:
-            raise TypeError("Expecting an IonizationStates instance.")
+            raise TypeError("Expecting an IonizationStateCollection instance.")
 
     @property
     def results(self) -> SimulationResults:
@@ -1013,7 +1008,7 @@ class NEI:
             raise AttributeError("The simulation has not yet been performed.")
 
     @property
-    def final(self) -> IonizationStates:
+    def final(self) -> IonizationStateCollection:
         """
         Return the ionization states of the plasma at the end of the
         simulation.
@@ -1057,7 +1052,7 @@ class NEI:
             except StopIteration:
                 break
             except Exception as exc:
-                raise NEIError(f"Unable to complete simulation.") from exc
+                raise NEIError("Unable to complete simulation.") from exc
 
         self._finalize_simulation()
 
@@ -1074,10 +1069,10 @@ class NEI:
             for element in self.elements
         }
 
-        self._final = IonizationStates(
+        self._final = IonizationStateCollection(
             inputs=final_ionfracs,
             abundances=self.abundances,
-            n=np.sum(self.results.number_densities["H"][-1, :]),  # modify this later?,
+            n0=np.sum(self.results.number_densities["H"][-1, :]),  # modify this later?,
             T_e=self.results.T_e[-1],
             tol=1e-6,
         )
@@ -1342,13 +1337,13 @@ class NEI:
         Returns the time value or array given the index/indices
 
         Parameters
-        ------
+        ----------
         index: array-like
                A value or array of values representing the index of
                the time array created by the simulation
 
         Returns
-        ------
+        -------
         get_time: astropy.units.Quantity
                   The time value associated with index input(s)
         """
@@ -1360,13 +1355,13 @@ class NEI:
         Returns the closest index value or array for the given time(s)
 
         Parameters
-        ------
+        ----------
         time: array-like,
                A value or array of values representing the values of
                the time array created by the simulation
 
         Returns
-        ------
+        -------
         index: int or array-like,
                   The index value associated with the time input(s)
         """

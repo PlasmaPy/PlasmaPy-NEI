@@ -1,0 +1,5 @@
+h5py >= 3.0
+matplotlib >= 3.3.0
+plasmapy >= 0.7
+scipy >= 1.5
+setuptools >= 41.2

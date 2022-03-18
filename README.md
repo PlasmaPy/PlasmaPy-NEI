@@ -12,22 +12,22 @@
 <!---[![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy-nei:openastronomy.org)--->
 
 [![Matrix](https://img.shields.io/badge/Matrix-join%20chat-blueviolet?style=flat&logo=matrix)](https://app.element.io/#/room/#plasmapy-nei:openastronomy.org)
-[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
+[![plasmapy](http://img.shields.io/badge/powered%20by-PlasmaPy-orange.svg?style=flat)](http://docs.plasmapy.org/)
+[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://docs.astropy.org/)
 
 <!---
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo._____.svg)](https://doi.org/10.5281/zenodo._____)
 --->
 
-PlasmaPy-NEI is being developed into an affiliated package of PlasmaPy
-designed to perform non-equilibrium ionization modeling of plasma.  Use
-cases include plasma in the solar wind and during coronal mass
-ejections.  Please read more on the
+PlasmaPy-NEI is being developed into an affiliated package of
+[PlasmaPy](https://www.plasmapy.org) designed to perform non-equilibrium
+ionization modeling of plasma.  Use cases include plasma in the solar
+wind and during coronal mass ejections.  Please read more on the
 [online documentation](https://nei.plasmapy.org).
 
 ## License
 
-
-This project is Copyright (c) PlasmaPy Developers and licensed under
+This project is Copyright (c) PlasmaPy-NEI Developers and licensed under
 the terms of the BSD+Patent license. Additional licenses are found in
 the `licenses` folder.
 
@@ -41,7 +41,7 @@ Smithsonian Institution.
 We love contributions! PlasmaPy-NEI is open source,
 built on open source, and we'd love to have you in our community.
 
-### Imposter syndrome disclaimer 
+### Imposter syndrome disclaimer
 
 We want your help. No, really.
 
