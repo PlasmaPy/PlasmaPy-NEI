@@ -195,9 +195,9 @@ class SimulationResults:
         """
         nsteps = self._index
 
-        self._n_e = self._n_e[0:nsteps]
-        self._T_e = self._T_e[0:nsteps]
-        self._time = self._time[0:nsteps]
+        self._n_e = self._n_e[:nsteps]
+        self._T_e = self._T_e[:nsteps]
+        self._time = self._time[:nsteps]
 
         for element in self.elements:
             self._ionic_fractions[element] = self._ionic_fractions[element][0:nsteps, :]
@@ -576,13 +576,10 @@ class NEI:
         if not T_e.isscalar:
             raise NEIError("Need scalar input for equil_ionic_fractions.")
 
-        equil_ionfracs = {}
-        for element in self.elements:
-            equil_ionfracs[element] = self.eigen_data_dict[element].equilibrium_state(
-                T_e.value
-            )
-
-        return equil_ionfracs
+        return {
+            element: self.eigen_data_dict[element].equilibrium_state(T_e.value)
+            for element in self.elements
+        }
 
     @property
     def elements(self) -> List[str]:
@@ -717,7 +714,7 @@ class NEI:
     @adapt_dt.setter
     def adapt_dt(self, choice: Optional[bool]):
         if choice is None:
-            self._adapt_dt = True if self.dt_input is None else False
+            self._adapt_dt = self.dt_input is None
         elif choice is True or choice is False:
             self._adapt_dt = choice
         else:
@@ -812,10 +809,7 @@ class NEI:
 
     @verbose.setter
     def verbose(self, choice: bool):
-        if choice is True or choice is False:
-            self._verbose = choice
-        else:
-            raise TypeError("Invalid choice for verbose.")
+        self._verbose = choice
 
     @u.quantity_input
     def in_time_interval(self, time: u.s, buffer: u.s = 1e-9 * u.s):
@@ -1045,7 +1039,7 @@ class NEI:
 
         self._initialize_simulation()
 
-        for step in range(self.max_steps):
+        for _ in range(self.max_steps):
             try:
                 self.set_timestep()
                 self.time_advance()
@@ -1094,13 +1088,7 @@ class NEI:
         # simulation, then we can either use the inputted timestep or
         # estimate it from other inputs.
 
-        dt_guess = (
-            self._dt
-            if self._dt
-            else self._dt_input
-            if self._dt_input
-            else self.time_max / self.max_steps
-        )
+        dt_guess = self._dt or self._dt_input or self.time_max / self.max_steps
 
         # Make sure that dt_guess does not lead to a time that is out
         # of the domain.
@@ -1117,7 +1105,7 @@ class NEI:
 
         index = self._get_temperature_index(T.to(u.K).value)
         T_nearby = np.array(self._temperature_grid[index - 1 : index + 2]) * u.K
-        T_boundary = (T_nearby[0:-1] + T_nearby[1:]) / 2
+        T_boundary = (T_nearby[:-1] + T_nearby[1:]) / 2
 
         # In order to use Brent's method, we must bound the root's
         # location.  Functions may change sharply or slowly, so we test
@@ -1291,7 +1279,7 @@ class NEI:
                 evect_inverse = self.eigen_data_dict[elem].eigenvector_inverses(T_e=T_e)
 
                 diagonal_evals = np.zeros((nstates, nstates), dtype=np.float64)
-                for ii in range(0, nstates):
+                for ii in range(nstates):
                     diagonal_evals[ii, ii] = np.exp(evals[ii] * dt * n_e)
 
                 matrix_1 = np.dot(diagonal_evals, evect)
@@ -1365,6 +1353,4 @@ class NEI:
         index: int or array-like,
                   The index value associated with the time input(s)
         """
-        index = (np.abs(self.results.time.value - time)).argmin()
-
-        return index
+        return (np.abs(self.results.time.value - time)).argmin()

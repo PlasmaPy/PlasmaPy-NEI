@@ -128,7 +128,7 @@ class EigenData:
         try:
             file = h5py.File(filename, "r")
         except OSError as oserror:
-            raise IOError(
+            raise OSError(
                 f"Unable to import {filename} using h5py.  This error could "
                 "happen, for example, if the repository was cloned without "
                 "having git-lfs installed."
