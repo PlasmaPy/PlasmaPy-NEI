@@ -61,6 +61,7 @@ extensions = [
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
+    "sphinxcontrib.bibtex",
     "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
     # "hoverxref.extension",
