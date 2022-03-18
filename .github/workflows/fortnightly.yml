@@ -1,8 +1,8 @@
-name: fortnightly tests
+name: monthly tests
 
 on:
   schedule:
-  - cron: 17 7 1,15 * *
+  - cron: 17 7 2 * *
   workflow_dispatch:
 
 jobs:
@@ -30,14 +30,14 @@ jobs:
           python: 3.8
           toxenv: py38-numpydev
 
-        - name: Documentation with Sphinx dev
-          os: ubuntu-latest
+        - name: Documentation with PlasmaPy dev
+          os: windows-latest
           python: 3.8
-          toxenv: build_docs-sphinxdev
+          toxenv: build_docs-plasmapydev
           toxposargs: -q
 
         - name: Python 3.8 with xarray dev
-          os: ubuntu-latest
+          os: macos-latest
           python: 3.8
           toxenv: py38-xarraydev
 
