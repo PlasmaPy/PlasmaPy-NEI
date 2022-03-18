@@ -1,2 +1,0 @@
-Updated the documentation configuration based on PlasmaPy's current
-configuration.
