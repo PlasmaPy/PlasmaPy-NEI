@@ -61,8 +61,8 @@ extensions = [
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
-    "sphinx_automodapi",
-    #    "hoverxref.extension",
+    # "sphinx_automodapi",
+    # "hoverxref.extension",
 ]
 
 # bibtex_bibfiles = ["bibliography.bib"]
