@@ -31,7 +31,7 @@ def time_advance_solver_for_testing(natom, te, ne, dt, f0, table):
 
     # define the temperary diagonal matrix
     diagona_evals = np.zeros((natom + 1, natom + 1))
-    for ii in range(0, natom + 1):
+    for ii in range(natom + 1):
         diagona_evals[ii, ii] = np.exp(evals[ii] * dt * ne)
 
     # matrix operation
@@ -72,18 +72,18 @@ def test_reachequlibrium_state(natom):
     f0 = table.equilibrium_state(T_e=4.0e4)
 
     print("START test_reachequlibrium_state:")
-    print(f"time_sta = ", time)
-    print(f"INI: ", f0)
-    print(f"Sum(f0) = ", np.sum(f0))
+    print("time_sta = ", time)
+    print("INI: ", f0)
+    print("Sum(f0) = ", np.sum(f0))
 
     # After time + dt:
     dt = 1.0e7
     ft = time_advance_solver_for_testing(natom, te0, ne0, time + dt, f0, table)
 
-    print(f"time_end = ", time + dt)
-    print(f"NEI:", ft)
-    print(f"Sum(ft) = ", np.sum(ft))
-    print(f"EI :", table.equilibrium_state(T_e=te0))
+    print("time_end = ", time + dt)
+    print("NEI:", ft)
+    print("Sum(ft) = ", np.sum(ft))
+    print("EI :", table.equilibrium_state(T_e=te0))
     print("End Test.\n")
 
     assert np.isclose(np.sum(ft), 1), "np.sum(ft) is not approximately 1"
@@ -119,7 +119,7 @@ def test_reachequlibrium_state_multisteps(natom=8):
     dt = 100000.0  # unit: second
 
     # Enter the time loop:
-    for it in range(100):
+    for _ in range(100):
         ft = time_advance_solver_for_testing(natom, te0, ne0, time + dt, f0, table)
         f0 = np.copy(ft)
         time = time + dt
