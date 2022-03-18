@@ -52,7 +52,7 @@ autosummary_generate = True
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.graphviz",
+    # "sphinx.ext.graphviz",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
