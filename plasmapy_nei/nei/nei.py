@@ -576,9 +576,10 @@ class NEI:
         if not T_e.isscalar:
             raise NEIError("Need scalar input for equil_ionic_fractions.")
 
-        return {element: self.eigen_data_dict[element].equilibrium_state(
-                T_e.value
-            ) for element in self.elements}
+        return {
+            element: self.eigen_data_dict[element].equilibrium_state(T_e.value)
+            for element in self.elements
+        }
 
     @property
     def elements(self) -> List[str]:
