@@ -91,7 +91,7 @@ def test_reachequlibrium_state(natom):
     assert np.allclose(ft, table.equilibrium_state(T_e=te0))
 
 
-def test_reachequlibrium_state_multisteps(natom=8):
+def test_reaching_equilibrium_state_multisteps(natom=8):
     """
     Starting the random initial distribution, the charge states will reach
     to equilibrium cases after a long time (multiple steps).
@@ -100,9 +100,7 @@ def test_reachequlibrium_state_multisteps(natom=8):
     distribution will be finally closed to equilibrium distribution at
     2.0e6K.
     """
-    #
     # Initial conditions, set plasma temperature, density and dt
-    #
     te0 = 1.0e6  # unit: K
     ne0 = 1.0e8  # unit: cm^-3
 
@@ -110,10 +108,6 @@ def test_reachequlibrium_state_multisteps(natom=8):
     time = 0
     table = EigenData(element=natom)
     f0 = table.equilibrium_state(T_e=4.0e4)
-
-    # print(f"time_sta = ", time)
-    # print(f"INI: ", f0)
-    # print(f"Sum(f0) = ", np.sum(f0))
 
     # After time + dt:
     dt = 100000.0  # unit: second
@@ -124,14 +118,7 @@ def test_reachequlibrium_state_multisteps(natom=8):
         f0 = np.copy(ft)
         time = time + dt
 
-    # print(f"time_end = ", time + dt)
-    # print(f"NEI:", ft)
-    # print(f"Sum(ft) = ", np.sum(ft))
-
     assert np.isclose(np.sum(ft), 1)
-
-    # print(f"EI :", table.equilibrium_state(T_e=te0))
-    # print("End Test.\n")
 
 
 # TODO: Test that appropriate exceptions are raised for invalid inputs
