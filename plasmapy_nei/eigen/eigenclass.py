@@ -17,7 +17,8 @@ from plasmapy.particles import Particle, particle_input
 max_atomic_number = 30  # TODO: double check if this is the correct number
 
 
-def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, natom):
+@particle_input
+def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, particle: Particle):
     """
     Compute the equilibrium charge state distribution for the
     temperature specified using ionization and recombination rates.
@@ -30,8 +31,8 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, natom):
     recomb_rate
         An array containing the recombination rates.
 
-    natom
-        The atomic number.
+    particle
+        The particle
     """
 
     # TODO: specify what each index in the array means
@@ -42,50 +43,64 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, natom):
 
     # TODO: use more descriptive variable names throughout function
 
-    nstates = natom + 1
-    conce = np.zeros(nstates)
-    f = np.zeros(nstates + 1)
-    c = np.zeros(nstates + 1)
-    r = np.zeros(nstates + 1)
+    nstates = particle.atomic_number + 1
+    concentration = np.zeros(nstates)
+    fraction = np.zeros(nstates + 1)
+    ionization_rate = np.zeros(nstates + 1)
+    recombination_rate = np.zeros(nstates + 1)
 
     # The start index is 1.
     for i in range(nstates):
-        c[i + 1] = ioniz_rate[i]
-        r[i + 1] = recomb_rate[i]
+        ionization_rate[i + 1] = ioniz_rate[i]
+        recombination_rate[i + 1] = recomb_rate[i]
 
     # f[0] = 0.0 from initialization
-    f[1] = 1.0
+    fraction[1] = 1.0
 
-    f[2] = c[1] * f[1] / r[2]
+    fraction[2] = ionization_rate[1] * fraction[1] / recombination_rate[2]
 
     # The solution for hydrogen may be found analytically.
-    if natom == 1:
-        f[1] = 1.0 / (1.0 + c[1] / r[2])
-        f[2] = c[1] * f[1] / r[2]
-        conce[0:2] = f[1:3]
-        return conce
+    if particle.element == "H":
+        fraction[1] = 1.0 / (1.0 + ionization_rate[1] / recombination_rate[2])
+        fraction[2] = ionization_rate[1] * fraction[1] / recombination_rate[2]
+        concentration[0:2] = fraction[1:3]
+        return concentration
 
     # for other elements
 
-    for k in range(2, natom):
-        f[k + 1] = (-c[k - 1] * f[k - 1] + (c[k] + r[k]) * f[k]) / r[k + 1]
+    for k in range(2, particle.atomic_number):
+        fraction[k + 1] = (
+            -ionization_rate[k - 1] * fraction[k - 1]
+            + (ionization_rate[k] + recombination_rate[k]) * fraction[k]
+        ) / recombination_rate[k + 1]
 
-    f[natom + 1] = c[natom] * f[natom] / r[natom + 1]
+    fraction[particle.atomic_number + 1] = (
+        ionization_rate[particle.atomic_number]
+        * fraction[particle.atomic_number]
+        / recombination_rate[particle.atomic_number + 1]
+    )
 
-    f[1] = 1.0 / np.sum(f)
+    fraction[1] = 1.0 / np.sum(fraction)
 
-    f[2] = c[1] * f[1] / r[2]
+    fraction[2] = ionization_rate[1] * fraction[1] / recombination_rate[2]
 
-    for k in range(2, natom):
-        f[k + 1] = (-c[k - 1] * f[k - 1] + (c[k] + r[k]) * f[k]) / r[k + 1]
+    for k in range(2, particle.atomic_number):
+        fraction[k + 1] = (
+            -ionization_rate[k - 1] * fraction[k - 1]
+            + (ionization_rate[k] + recombination_rate[k]) * fraction[k]
+        ) / recombination_rate[k + 1]
 
-    f[natom + 1] = c[natom] * f[natom] / r[natom + 1]
+    fraction[particle.atomic_number + 1] = (
+        ionization_rate[particle.atomic_number]
+        * fraction[particle.atomic_number]
+        / recombination_rate[particle.atomic_number + 1]
+    )
 
     # normalize the distribution
-    f = f / np.sum(f)
+    fraction = fraction / np.sum(fraction)
 
-    conce[0:nstates] = f[1 : nstates + 1]
-    return conce
+    concentration[0:nstates] = fraction[1 : nstates + 1]
+    return concentration
 
 
 class EigenData:
@@ -353,7 +368,7 @@ class EigenData:
 
         Parameters
         ----------
-        T_e : ~astropy.units.Quantity
+        T_e : |Quantity|
             The electron temperature
 
         T_e_index : integer
@@ -380,7 +395,7 @@ class EigenData:
 
         Parameters
         ----------
-        T_e : ~astropy.units.Quantity
+        T_e : |Quantity|
             The electron temperature
 
         T_e_index : integer
@@ -404,7 +419,7 @@ class EigenData:
 
         Parameters
         ----------
-        T_e : ~astropy.units.Quantity
+        T_e : |Quantity|
             The electron temperature
 
         T_e_index : integer
