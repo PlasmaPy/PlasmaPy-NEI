@@ -64,7 +64,7 @@ extensions = [
     "sphinxcontrib.bibtex",
     "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
-    # "hoverxref.extension",
+    "hoverxref.extension",
 ]
 
 bibtex_bibfiles = ["bibliography.bib"]
