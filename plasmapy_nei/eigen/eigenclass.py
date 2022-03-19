@@ -11,28 +11,35 @@ import numpy as np
 import pkg_resources
 import warnings
 
+from numbers import Integral
 from numpy import linalg as LA
 from plasmapy.particles import Particle, particle_input
 
-max_atomic_number = 30  # TODO: double check if this is the correct number
+# import numba
 
 
-@particle_input
-def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, particle: Particle):
+_MAX_ATOMIC_NUMBER = 30
+
+
+def _get_equilibrium_charge_states(
+    ioniz_rate: np.ndarray,
+    recomb_rate: np.ndarray,
+    atomic_number: Integral,
+) -> np.ndarray:
     """
     Compute the equilibrium charge state distribution for the
     temperature specified using ionization and recombination rates.
 
     Parameters
     ----------
-    ioniz_rate
+    ioniz_rate : |ndarray|
         An array containing the ionization rates.
 
-    recomb_rate
+    recomb_rate : |ndarray|
         An array containing the recombination rates.
 
-    particle
-        The particle
+    atomic_number : integer
+        The atomic number of element to get the ionization rate of.
     """
 
     # TODO: specify what each index in the array means
@@ -43,14 +50,19 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, particle: Particle):
 
     # TODO: use more descriptive variable names throughout function
 
-    nstates = particle.atomic_number + 1
-    concentration = np.zeros(nstates)
-    ionization_fractions = np.zeros(nstates + 1)
-    ionization_rate = np.zeros(nstates + 1)
-    recombination_rate = np.zeros(nstates + 1)
+    if atomic_number > _MAX_ATOMIC_NUMBER:
+        raise ValueError(
+            f"The atomic number must be between 1 and {_MAX_ATOMIC_NUMBER}"
+        )
+
+    number_of_states = atomic_number + 1
+    concentration = np.zeros(number_of_states)
+    ionization_fractions = np.zeros(number_of_states + 1)
+    ionization_rate = np.zeros(number_of_states + 1)
+    recombination_rate = np.zeros(number_of_states + 1)
 
     # The start index is 1.
-    for i in range(nstates):
+    for i in range(number_of_states):
         ionization_rate[i + 1] = ioniz_rate[i]
         recombination_rate[i + 1] = recomb_rate[i]
 
@@ -62,7 +74,7 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, particle: Particle):
     )
 
     # The solution for hydrogen may be found analytically.
-    if particle.element == "H":
+    if atomic_number == 1:
         ionization_fractions[1] = 1.0 / (
             1.0 + ionization_rate[1] / recombination_rate[2]
         )
@@ -74,16 +86,16 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, particle: Particle):
 
     # for other elements
 
-    for k in range(2, particle.atomic_number):
+    for k in range(2, atomic_number):
         ionization_fractions[k + 1] = (
             -ionization_rate[k - 1] * ionization_fractions[k - 1]
             + (ionization_rate[k] + recombination_rate[k]) * ionization_fractions[k]
         ) / recombination_rate[k + 1]
 
-    ionization_fractions[particle.atomic_number + 1] = (
-        ionization_rate[particle.atomic_number]
-        * ionization_fractions[particle.atomic_number]
-        / recombination_rate[particle.atomic_number + 1]
+    ionization_fractions[atomic_number + 1] = (
+        ionization_rate[atomic_number]
+        * ionization_fractions[atomic_number]
+        / recombination_rate[atomic_number + 1]
     )
 
     ionization_fractions[1] = 1.0 / np.sum(ionization_fractions)
@@ -92,22 +104,22 @@ def _get_equilibrium_charge_states(ioniz_rate, recomb_rate, particle: Particle):
         ionization_rate[1] * ionization_fractions[1] / recombination_rate[2]
     )
 
-    for k in range(2, particle.atomic_number):
+    for k in range(2, atomic_number):
         ionization_fractions[k + 1] = (
             -ionization_rate[k - 1] * ionization_fractions[k - 1]
             + (ionization_rate[k] + recombination_rate[k]) * ionization_fractions[k]
         ) / recombination_rate[k + 1]
 
-    ionization_fractions[particle.atomic_number + 1] = (
-        ionization_rate[particle.atomic_number]
-        * ionization_fractions[particle.atomic_number]
-        / recombination_rate[particle.atomic_number + 1]
+    ionization_fractions[atomic_number + 1] = (
+        ionization_rate[atomic_number]
+        * ionization_fractions[atomic_number]
+        / recombination_rate[atomic_number + 1]
     )
 
     # normalize the distribution
     ionization_fractions = ionization_fractions / np.sum(ionization_fractions)
 
-    concentration[0:nstates] = ionization_fractions[1 : nstates + 1]
+    concentration[0:number_of_states] = ionization_fractions[1 : number_of_states + 1]
     return concentration
 
 
@@ -129,7 +141,7 @@ class EigenData:
 
     def _validate_element(self, element):
 
-        if element.atomic_number > max_atomic_number:
+        if element.atomic_number > _MAX_ATOMIC_NUMBER:
             raise ValueError("Need an element")
 
         self._element = element
@@ -147,11 +159,7 @@ class EigenData:
         try:
             file = h5py.File(filename, "r")
         except OSError as oserror:
-            raise OSError(
-                f"Unable to import {filename} using h5py.  This error could "
-                "happen, for example, if the repository was cloned without "
-                "having git-lfs installed."
-            ) from oserror
+            raise OSError(f"Unable to import {filename} using h5py.") from oserror
         else:
             self._temperature_grid = file["te_gird"][:]  # TODO: fix typo in HDF5 file
             self._ntemp = self._temperature_grid.size

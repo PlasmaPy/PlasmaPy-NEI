@@ -7,6 +7,8 @@ from plasmapy import particles
 
 from plasmapy_nei.eigen import EigenData
 
+atomic_numbers_to_test = [1, 2, 30]  # np.arange(1, 30)
+
 
 @pytest.mark.parametrize("atomic_numb", np.arange(1, 30))
 def test_instantiation(atomic_numb):
