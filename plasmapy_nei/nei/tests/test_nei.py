@@ -13,7 +13,7 @@ abundances = {"H": 1, "He": 0.1}
 
 time_array = np.array([0, 800]) * u.s
 T_e_array = np.array([4e4, 6e4]) * u.K
-n_array = np.array([1e9, 5e8]) * u.cm ** -3
+n_array = np.array([1e9, 5e8]) * u.cm**-3
 
 
 @pytest.fixture(
@@ -57,7 +57,7 @@ n_array = np.array([1e9, 5e8]) * u.cm ** -3
                 "inputs": inputs_dict,
                 "abundances": abundances,
                 "T_e": T_e_array,
-                "n": 1e9 * u.cm ** -3,
+                "n": 1e9 * u.cm**-3,
                 "time_input": time_array,
                 "time_start": 0 * u.s,
                 "time_max": 800 * u.s,
@@ -73,7 +73,7 @@ n_array = np.array([1e9, 5e8]) * u.cm ** -3
                 "inputs": inputs_dict,
                 "abundances": abundances,
                 "T_e": lambda time: 1e4 * (1 + time / u.s) * u.K,
-                "n": 1e15 * u.cm ** -3,
+                "n": 1e15 * u.cm**-3,
                 "time_max": 800 * u.s,
                 "max_steps": 2,
                 "dt": 100 * u.s,
@@ -87,7 +87,7 @@ n_array = np.array([1e9, 5e8]) * u.cm ** -3
                 "inputs": inputs_dict,
                 "abundances": abundances,
                 "T_e": 6e4 * u.K,
-                "n": lambda time: 1e9 * (1 + time / u.s) * u.cm ** -3,
+                "n": lambda time: 1e9 * (1 + time / u.s) * u.cm**-3,
                 "time_start": 0 * u.s,
                 "time_max": 800 * u.s,
                 "adapt_dt": False,
@@ -109,7 +109,7 @@ n_array = np.array([1e9, 5e8]) * u.cm ** -3
                     "Fe": 1e-4,
                 },
                 "T_e": 10001.0 * u.K,
-                "n": 1e13 * u.cm ** -3,
+                "n": 1e13 * u.cm**-3,
                 "time_max": 2e6 * u.s,
                 "tol": 1e-9,
                 "adapt_dt": False,
@@ -132,7 +132,7 @@ n_array = np.array([1e9, 5e8]) * u.cm ** -3
                     "S": 2e-6,
                 },
                 "T_e": 7e6 * u.K,
-                "n": 1e9 * u.cm ** -3,
+                "n": 1e9 * u.cm**-3,
                 "time_max": 1e8 * u.s,
                 "dt": 5e7 * u.s,
                 "max_steps": 3,
@@ -150,7 +150,7 @@ n_array = np.array([1e9, 5e8]) * u.cm ** -3
                 },
                 "abundances": {"H": 1, "He": 0.1, "O": 1e-4},
                 "T_e": 3e6 * u.K,
-                "n": 1e9 * u.cm ** -3,
+                "n": 1e9 * u.cm**-3,
                 "dt": 1e6 * u.s,
                 "time_start": 0 * u.s,
                 "time_max": 1e6 * u.s,
@@ -165,7 +165,7 @@ n_array = np.array([1e9, 5e8]) * u.cm ** -3
                 "inputs": ["H", "He"],
                 "abundances": {"H": 1, "He": 0.1},
                 "T_e": lambda t: u.K * (1e6 + 1.3e4 * np.sin(t.value)),
-                "n": 1e10 * u.cm ** -3,
+                "n": 1e10 * u.cm**-3,
                 "max_steps": 300,
                 "time_start": 0 * u.s,
                 "time_max": 2 * np.pi * u.s,

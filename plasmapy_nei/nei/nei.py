@@ -88,15 +88,15 @@ class SimulationResults:
 
         self._number_densities = {
             elem: np.full((max_steps + 1, self.nstates[elem]), np.nan, dtype=np.float64)
-            * u.cm ** -3
+            * u.cm**-3
             for elem in self.elements
         }
 
         self._n_elem = {
-            elem: np.full(max_steps + 1, np.nan) * u.cm ** -3 for elem in self.elements
+            elem: np.full(max_steps + 1, np.nan) * u.cm**-3 for elem in self.elements
         }
 
-        self._n_e = np.full(max_steps + 1, np.nan) * u.cm ** -3
+        self._n_e = np.full(max_steps + 1, np.nan) * u.cm**-3
         self._T_e = np.full(max_steps + 1, np.nan) * u.K
         self._time = np.full(max_steps + 1, np.nan) * u.s
 
@@ -161,7 +161,7 @@ class SimulationResults:
             }
 
             # Calculate the electron number density
-            n_e = 0.0 * u.cm ** -3
+            n_e = 0.0 * u.cm**-3
             for elem in elements:
                 integer_charges = np.linspace(
                     0, self.nstates[elem] - 1, self.nstates[elem]
@@ -920,7 +920,7 @@ class NEI:
     def n_input(self, n: u.Quantity):
         if isinstance(n, u.Quantity):
             try:
-                n = n.to(u.cm ** -3)
+                n = n.to(u.cm**-3)
             except u.UnitConversionError:
                 raise u.UnitsError("Invalid hydrogen density.")
             if n.isscalar:
@@ -938,13 +938,13 @@ class NEI:
                     bounds_error=False,
                     fill_value="extrapolate",
                 )
-                self._hydrogen_number_density = lambda time: f(time.value) * u.cm ** -3
+                self._hydrogen_number_density = lambda time: f(time.value) * u.cm**-3
                 self._n_input = n
         elif callable(n):
             if self.time_start is not None:
                 try:
-                    n(self.time_start).to(u.cm ** -3)
-                    n(self.time_max).to(u.cm ** -3)
+                    n(self.time_start).to(u.cm**-3)
+                    n(self.time_max).to(u.cm**-3)
                 except Exception:
                     raise ValueError("Invalid number density function.")
             self._n_input = n
